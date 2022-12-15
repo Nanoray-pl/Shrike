@@ -13,6 +13,7 @@ namespace Nanoray.Shrike
             where TSelf : IPointerAnchorableSequenceMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>, ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TPointerMatcher : IPointerAnchorableSequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TAnchor : notnull
             => FindAndAnchor<TSelf, TElement, TPointerMatcher, TBlockMatcher, TAnchor>(
                 self,
                 SequenceBlockMatcherFindOccurence.First,
@@ -24,12 +25,14 @@ namespace Nanoray.Shrike
             where TSelf : IPointerAnchorableSequenceMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>, ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TPointerMatcher : IPointerAnchorableSequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TAnchor : notnull
             => FindAndAnchor<TSelf, TElement, TPointerMatcher, TBlockMatcher, TAnchor>(self, (IReadOnlyList<IAutoAnchorableElementMatch<TElement, TAnchor>>)toFind);
 
         public static TBlockMatcher FindAndAnchor<TSelf, TElement, TPointerMatcher, TBlockMatcher, TAnchor>(this TSelf self, SequenceBlockMatcherFindOccurence occurence, SequenceBlockMatcherFindBounds bounds, IReadOnlyList<IAutoAnchorableElementMatch<TElement, TAnchor>> toFind)
             where TSelf : IPointerAnchorableSequenceMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>, ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TPointerMatcher : IPointerAnchorableSequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TAnchor : notnull
         {
             var current = self.Find(occurence, bounds, toFind);
             int startIndex = current.StartIndex;
@@ -50,6 +53,7 @@ namespace Nanoray.Shrike
             where TSelf : IPointerAnchorableSequenceMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>, ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TPointerMatcher : IPointerAnchorableSequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TAnchor : notnull
             => FindAndAnchor<TSelf, TElement, TPointerMatcher, TBlockMatcher, TAnchor>(self, occurence, bounds, (IReadOnlyList<IAutoAnchorableElementMatch<TElement, TAnchor>>)toFind);
     }
 }
