@@ -13,17 +13,17 @@ namespace Nanoray.Shrike
         }
 
 #if NET7_0_OR_GREATER
-        public static override SequencePointerMatcher<TElement> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)
-            => new(this.AllElements, index);
+        public static SequencePointerMatcher<TElement> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)
+            => new(allElements, index);
 
-        public static override SequenceBlockMatcher<TElement> MakeNewBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length)
-            => new(this.AllElements, startIndex, length);
+        public static SequenceBlockMatcher<TElement> MakeNewBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length)
+            => new(allElements, startIndex, length);
 #else
         public SequencePointerMatcher<TElement> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)
-            => new(this.AllElements, index);
+            => new(allElements, index);
 
         public SequenceBlockMatcher<TElement> MakeNewBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length)
-            => new(this.AllElements, startIndex, length);
+            => new(allElements, startIndex, length);
 #endif
 
         public abstract SequenceBlockMatcher<TElement> Remove();

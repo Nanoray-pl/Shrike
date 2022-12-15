@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace Nanoray.Shrike
 {
@@ -22,14 +21,14 @@ namespace Nanoray.Shrike
 
         TPointerMatcher MakePointerMatcher(int index)
 #if NET7_0_OR_GREATER
-            => MakeNewPointerMatcher(this.AllElements, index);
+            => TPointerMatcher.MakeNewPointerMatcher(this.AllElements, index);
 #else
             => this.MakeNewPointerMatcher(this.AllElements, index);
 #endif
 
         TBlockMatcher MakeBlockMatcher(int startIndex, int length)
 #if NET7_0_OR_GREATER
-            => MakeNewBlockMatcher(this.AllElements, startIndex, length);
+            => TBlockMatcher.MakeNewBlockMatcher(this.AllElements, startIndex, length);
 #else
             => this.MakeNewBlockMatcher(this.AllElements, startIndex, length);
 #endif
@@ -42,8 +41,8 @@ namespace Nanoray.Shrike
 
         static abstract TBlockMatcher MakeNewBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length);
 
-        static abstract TBlockMatcher MakeNewBlockMatcher(IEnumerable<TElement> allElements, Range range)
-            => MakeNewBlockMatcher(allElements, range.Start.Value, range.End.Value - range.Start.Value);
+        static TBlockMatcher MakeNewBlockMatcher(IEnumerable<TElement> allElements, Range range)
+            => TBlockMatcher.MakeNewBlockMatcher(allElements, range.Start.Value, range.End.Value - range.Start.Value);
 #else
         TPointerMatcher MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index);
 

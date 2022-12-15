@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace Nanoray.Shrike
 {
@@ -30,10 +29,10 @@ namespace Nanoray.Shrike
         }
 
 #if NET7_0_OR_GREATER
-        public static override AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)
+        public static AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)
             => new(TWrappedPointerMatcher.MakeNewPointerMatcher(allElements, index));
 
-        public static override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length)
+        public static AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length)
             => new(TWrappedBlockMatcher.MakeNewBlockMatcher(allElements, startIndex, length));
 #else
         public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)
