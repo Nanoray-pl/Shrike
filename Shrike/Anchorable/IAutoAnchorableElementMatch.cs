@@ -17,7 +17,7 @@ namespace Nanoray.Shrike
             => FindAndAnchor<TSelf, TElement, TPointerMatcher, TBlockMatcher, TAnchor>(
                 self,
                 SequenceBlockMatcherFindOccurence.First,
-                self.StartIndex == 0 && self.Length == self.AllElements.Count ? SequenceBlockMatcherFindBounds.Enclosed : SequenceBlockMatcherFindBounds.After,
+                self.StartIndex() == 0 && self.Length() == self.AllElements().Count ? SequenceBlockMatcherFindBounds.Enclosed : SequenceBlockMatcherFindBounds.After,
                 toFind
             );
 
@@ -35,8 +35,8 @@ namespace Nanoray.Shrike
             where TAnchor : notnull
         {
             var current = self.Find(occurence, bounds, toFind);
-            int startIndex = current.StartIndex;
-            int length = current.Length;
+            int startIndex = current.StartIndex();
+            int length = current.Length();
             for (int i = 0; i < toFind.Count; i++)
             {
                 if (toFind[i].Anchor is null)

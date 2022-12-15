@@ -4,13 +4,16 @@ namespace Nanoray.Shrike
 {
     public abstract record SequenceMatcher<TElement> : ISequenceMatcher<TElement, SequencePointerMatcher<TElement>, SequenceBlockMatcher<TElement>>
     {
-        /// <inheritdoc/>
-        public IReadOnlyList<TElement> AllElements { get; init; }
+        private IReadOnlyList<TElement> AllElementsStorage { get; init; }
 
         protected internal SequenceMatcher(IReadOnlyList<TElement> allElements)
         {
-            this.AllElements = allElements;
+            this.AllElementsStorage = allElements;
         }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<TElement> AllElements()
+            => this.AllElementsStorage;
 
 #if NET7_0_OR_GREATER
         public static SequencePointerMatcher<TElement> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)

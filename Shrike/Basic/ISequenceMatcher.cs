@@ -5,15 +5,15 @@ namespace Nanoray.Shrike
 {
     public interface ISequenceMatcher<TElement>
     {
-        IReadOnlyList<TElement> AllElements { get; }
+        IReadOnlyList<TElement> AllElements();
     }
 
     public interface ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> : ISequenceMatcher<TElement>
         where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
         where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
     {
-        TBlockMatcher AllElementsBlockMatcher
-            => this.MakeBlockMatcher(0, this.AllElements.Count);
+        TBlockMatcher MakeAllElementsBlockMatcher()
+            => this.MakeBlockMatcher(0, this.AllElements().Count);
 
         TBlockMatcher Replace(IEnumerable<TElement> elements);
 
@@ -21,16 +21,16 @@ namespace Nanoray.Shrike
 
         TPointerMatcher MakePointerMatcher(int index)
 #if NET7_0_OR_GREATER
-            => TPointerMatcher.MakeNewPointerMatcher(this.AllElements, index);
+            => TPointerMatcher.MakeNewPointerMatcher(this.AllElements(), index);
 #else
-            => this.MakeNewPointerMatcher(this.AllElements, index);
+            => this.MakeNewPointerMatcher(this.AllElements(), index);
 #endif
 
         TBlockMatcher MakeBlockMatcher(int startIndex, int length)
 #if NET7_0_OR_GREATER
-            => TBlockMatcher.MakeNewBlockMatcher(this.AllElements, startIndex, length);
+            => TBlockMatcher.MakeNewBlockMatcher(this.AllElements(), startIndex, length);
 #else
-            => this.MakeNewBlockMatcher(this.AllElements, startIndex, length);
+            => this.MakeNewBlockMatcher(this.AllElements(), startIndex, length);
 #endif
 
         TBlockMatcher MakeBlockMatcher(Range range)
@@ -50,6 +50,36 @@ namespace Nanoray.Shrike
 
         TBlockMatcher MakeNewBlockMatcher(IEnumerable<TElement> allElements, Range range)
             => this.MakeNewBlockMatcher(allElements, range.Start.Value, range.End.Value - range.Start.Value);
+#endif
+    }
+
+    public static class ISequenceMatcherDefaultImplementations
+    {
+        public static TBlockMatcher MakeAllElementsBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.MakeAllElementsBlockMatcher();
+
+        public static TPointerMatcher MakePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, int index)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.MakePointerMatcher(index);
+
+        public static TBlockMatcher MakeBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, int startIndex, int length)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.MakeBlockMatcher(startIndex, length);
+
+        public static TBlockMatcher MakeBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, Range range)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.MakeBlockMatcher(range);
+
+#if !NET7_0_OR_GREATER
+        public static TBlockMatcher MakeNewBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, IEnumerable<TElement> allElements, Range range)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.MakeNewBlockMatcher(allElements, range);
 #endif
     }
 

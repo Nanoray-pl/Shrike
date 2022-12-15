@@ -13,10 +13,6 @@ namespace Nanoray.Shrike
     {
         protected internal ISequenceMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> WrappedMatcher { get; init; }
 
-        /// <inheritdoc/>
-        public IReadOnlyList<TElement> AllElements
-            => this.WrappedMatcher.AllElements;
-
         protected internal IReadOnlyDictionary<TPointerAnchor, int> AnchoredPointers { get; init; }
 
         protected internal IReadOnlyDictionary<TBlockAnchor, Range> AnchoredBlocks { get; init; }
@@ -27,6 +23,10 @@ namespace Nanoray.Shrike
             this.AnchoredPointers = anchoredPointers;
             this.AnchoredBlocks = anchoredBlocks;
         }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<TElement> AllElements()
+            => this.WrappedMatcher.AllElements();
 
 #if NET7_0_OR_GREATER
         public static AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)

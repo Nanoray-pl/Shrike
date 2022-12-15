@@ -6,51 +6,58 @@ namespace Nanoray.Shrike
 {
     public record SequenceBlockMatcher<TElement> : SequenceMatcher<TElement>, ISequenceBlockMatcher<TElement, SequencePointerMatcher<TElement>, SequenceBlockMatcher<TElement>>
     {
-        /// <inheritdoc/>
-        public int StartIndex { get; init; }
-
-        /// <inheritdoc/>
-        public int Length { get; init; }
-
-        /// <inheritdoc/>
-        public int EndIndex
-            => this.StartIndex + this.Length;
+        private int StartIndexStorage { get; init; }
+        private int LengthStorage { get; init; }
 
         public SequenceBlockMatcher(IEnumerable<TElement> allElements) : this(allElements.ToList()) { }
 
         public SequenceBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length) : this(allElements.ToList(), startIndex, length) { }
 
+        public SequenceBlockMatcher(params TElement[] allElements) : this((IEnumerable<TElement>)allElements) { }
+
         private SequenceBlockMatcher(IReadOnlyList<TElement> allElements) : this(allElements, 0, allElements.Count) { }
 
         private SequenceBlockMatcher(IReadOnlyList<TElement> allElements, int startIndex, int length) : base(allElements)
         {
-            this.StartIndex = startIndex;
-            this.Length = length;
+            this.StartIndexStorage = startIndex;
+            this.LengthStorage = length;
 
-            if (startIndex < 0 || startIndex > this.AllElements.Count)
+            if (startIndex < 0 || startIndex > this.AllElements().Count)
                 throw new IndexOutOfRangeException($"Invalid value {startIndex} for parameter `{nameof(startIndex)}`.");
-            if (length < 0 || length > this.AllElements.Count)
+            if (length < 0 || length > this.AllElements().Count)
                 throw new ArgumentException($"Invalid value {length} for parameter `{nameof(length)}`.");
-            if (startIndex + length > this.AllElements.Count)
+            if (startIndex + length > this.AllElements().Count)
                 throw new IndexOutOfRangeException($"Invalid value {length} for parameter `{nameof(length)}`.");
         }
+
+        /// <inheritdoc/>
+        public int StartIndex()
+            => this.StartIndexStorage;
+
+        /// <inheritdoc/>
+        public int Length()
+            => this.LengthStorage;
+
+        /// <inheritdoc/>
+        public int EndIndex()
+            => this.StartIndex() + this.Length();
 
         public override SequenceBlockMatcher<TElement> Remove()
         {
             List<TElement> result = new();
-            result.AddRange(this.AllElements.Take(this.StartIndex));
-            result.AddRange(this.AllElements.Skip(this.StartIndex + this.Length));
-            return new(result, this.StartIndex, 0);
+            result.AddRange(this.AllElements().Take(this.StartIndex()));
+            result.AddRange(this.AllElements().Skip(this.StartIndex() + this.Length()));
+            return new(result, this.StartIndex(), 0);
         }
 
         public override SequenceBlockMatcher<TElement> Replace(IEnumerable<TElement> elements)
         {
             List<TElement> result = new();
-            result.AddRange(this.AllElements.Take(this.StartIndex));
+            result.AddRange(this.AllElements().Take(this.StartIndex()));
             result.AddRange(elements);
-            result.AddRange(this.AllElements.Skip(this.StartIndex + this.Length));
-            int lengthDifference = result.Count - this.AllElements.Count;
-            return new(result, this.StartIndex, lengthDifference + this.Length);
+            result.AddRange(this.AllElements().Skip(this.StartIndex() + this.Length()));
+            int lengthDifference = result.Count - this.AllElements().Count;
+            return new(result, this.StartIndex(), lengthDifference + this.Length());
         }
 
         public SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
@@ -60,26 +67,26 @@ namespace Nanoray.Shrike
             {
                 case SequenceMatcherPastBoundsDirection.Before:
                     {
-                        result.AddRange(this.AllElements.Take(this.StartIndex));
+                        result.AddRange(this.AllElements().Take(this.StartIndex()));
                         result.AddRange(elements);
-                        result.AddRange(this.AllElements.Skip(this.StartIndex));
-                        int lengthDifference = result.Count - this.AllElements.Count;
+                        result.AddRange(this.AllElements().Skip(this.StartIndex()));
+                        int lengthDifference = result.Count - this.AllElements().Count;
                         return includeInsertionInResultingBounds switch
                         {
-                            false => new(result, this.StartIndex + lengthDifference, this.Length),
-                            true => new(result, this.StartIndex, this.Length + lengthDifference),
+                            false => new(result, this.StartIndex() + lengthDifference, this.Length()),
+                            true => new(result, this.StartIndex(), this.Length() + lengthDifference),
                         };
                     }
                 case SequenceMatcherPastBoundsDirection.After:
                     {
-                        result.AddRange(this.AllElements.Take(this.EndIndex));
+                        result.AddRange(this.AllElements().Take(this.EndIndex()));
                         result.AddRange(elements);
-                        result.AddRange(this.AllElements.Skip(this.EndIndex));
-                        int lengthDifference = result.Count - this.AllElements.Count;
+                        result.AddRange(this.AllElements().Skip(this.EndIndex()));
+                        int lengthDifference = result.Count - this.AllElements().Count;
                         return includeInsertionInResultingBounds switch
                         {
-                            false => new(result, this.StartIndex, this.Length),
-                            true => new(result, this.StartIndex, this.Length + lengthDifference),
+                            false => new(result, this.StartIndex(), this.Length()),
+                            true => new(result, this.StartIndex(), this.Length() + lengthDifference),
                         };
                     }
                 default:
@@ -90,12 +97,12 @@ namespace Nanoray.Shrike
         public SequenceBlockMatcher<TElement> Do(Func<SequenceBlockMatcher<TElement>, SequenceBlockMatcher<TElement>> closure)
         {
 #if NET7_0_OR_GREATER
-            var innerMatcher = MakeNewBlockMatcher(((ISequenceBlockMatcher<TElement>)this).Elements, 0, ((ISequenceBlockMatcher<TElement>)this).Length);
+            var innerMatcher = MakeNewBlockMatcher(this.Elements(), 0, this.Length());
 #else
-            var innerMatcher = this.MakeNewBlockMatcher(((ISequenceBlockMatcher<TElement>)this).Elements, 0, ((ISequenceBlockMatcher<TElement>)this).Length);
+            var innerMatcher = this.MakeNewBlockMatcher(this.Elements(), 0, this.Length());
 #endif
             var modifiedMatcher = closure(innerMatcher);
-            return this.Replace(modifiedMatcher.AllElements);
+            return this.Replace(modifiedMatcher.AllElements());
         }
     }
 }

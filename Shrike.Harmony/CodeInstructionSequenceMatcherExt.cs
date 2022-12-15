@@ -9,9 +9,9 @@ namespace Nanoray.Shrike.Harmony
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
-            for (int i = 0; i < self.AllElements.Count; i++)
+            for (int i = 0; i < self.AllElements().Count; i++)
             {
-                if (self.AllElements[i].labels.Contains(label))
+                if (self.AllElements()[i].labels.Contains(label))
 #if NET7_0_OR_GREATER
                     return TPointerMatcher.MakePointerMatcher(i);
 #else
