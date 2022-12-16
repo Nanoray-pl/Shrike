@@ -154,8 +154,6 @@ namespace Nanoray.Shrike
             };
         }
 
-        TBlockMatcher Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements);
-
         TBlockMatcher Do(Func<TBlockMatcher, TBlockMatcher> closure);
 
         TBlockMatcher Do(Func<TBlockMatcher, TPointerMatcher> closure)
@@ -239,11 +237,6 @@ namespace Nanoray.Shrike
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             => self.EncompassUntil(direction, toFind);
-
-        public static TBlockMatcher Insert<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, params TElement[] elements)
-            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            => self.Insert(position, includeInsertionInResultingBounds, elements);
 
         public static TBlockMatcher Repeat<TElement, TPointerMatcher, TBlockMatcher>(this TBlockMatcher self, int times, Func<TBlockMatcher, TBlockMatcher> closure)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>

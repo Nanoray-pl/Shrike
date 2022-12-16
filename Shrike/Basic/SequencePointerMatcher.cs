@@ -22,6 +22,7 @@ namespace Nanoray.Shrike
         public int Index()
             => this.IndexStorage;
 
+        /// <inheritdoc/>
         public SequencePointerMatcher<TElement> Replace(TElement element)
         {
             if (this.Index() >= this.AllElements().Count)
@@ -32,6 +33,7 @@ namespace Nanoray.Shrike
             return new(result, this.Index());
         }
 
+        /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Remove()
         {
             List<TElement> result = new();
@@ -40,6 +42,42 @@ namespace Nanoray.Shrike
             return new(result, this.Index(), 0);
         }
 
+        /// <inheritdoc/>
+        public override SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
+        {
+            List<TElement> result = new();
+            switch (position)
+            {
+                case SequenceMatcherPastBoundsDirection.Before:
+                    {
+                        result.AddRange(this.AllElements().Take(this.Index()));
+                        result.AddRange(elements);
+                        result.AddRange(this.AllElements().Skip(this.Index()));
+                        int lengthDifference = result.Count - this.AllElements().Count;
+                        return includeInsertionInResultingBounds switch
+                        {
+                            false => new(result, this.Index() + lengthDifference, 1),
+                            true => new(result, this.Index(), lengthDifference + 1),
+                        };
+                    }
+                case SequenceMatcherPastBoundsDirection.After:
+                    {
+                        result.AddRange(this.AllElements().Take(this.Index() + 1));
+                        result.AddRange(elements);
+                        result.AddRange(this.AllElements().Skip(this.Index() + 1));
+                        int lengthDifference = result.Count - this.AllElements().Count;
+                        return includeInsertionInResultingBounds switch
+                        {
+                            false => new(result, this.Index(), 1),
+                            true => new(result, this.Index(), lengthDifference + 1),
+                        };
+                    }
+                default:
+                    throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value.");
+            }
+        }
+
+        /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Replace(IEnumerable<TElement> elements)
         {
             List<TElement> result = new();
@@ -50,16 +88,7 @@ namespace Nanoray.Shrike
             return new(result, this.Index(), lengthDifference + 1);
         }
 
-        public SequenceBlockMatcher<TElement> Insert(IEnumerable<TElement> elements)
-        {
-            List<TElement> result = new();
-            result.AddRange(this.AllElements().Take(this.Index()));
-            result.AddRange(elements);
-            result.AddRange(this.AllElements().Skip(this.Index()));
-            int lengthDifference = result.Count - this.AllElements().Count;
-            return new(result, this.Index(), lengthDifference);
-        }
-
+        /// <inheritdoc/>
         public SequencePointerMatcher<TElement> Remove(SequenceMatcherPastBoundsDirection postRemovalPosition)
         {
             if (this.Index() >= this.AllElements().Count)

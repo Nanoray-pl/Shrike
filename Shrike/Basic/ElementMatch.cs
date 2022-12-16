@@ -2,17 +2,29 @@ using System;
 
 namespace Nanoray.Shrike
 {
+    /// <summary>
+    /// Represents a simple single sequence element match.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements this object can match.</typeparam>
     public record ElementMatch<TElement> : IElementMatch<TElement>
     {
+        /// <inheritdoc/>
         public string Description { get; init; }
+
         private Func<TElement, bool> Closure { get; init; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ElementMatch{TElement}"/> class.
+        /// </summary>
+        /// <param name="description">A description of the match, used mostly for debugging purposes.</param>
+        /// <param name="closure">The function that tests whether a given element matches this match.</param>
         public ElementMatch(string description, Func<TElement, bool> closure)
         {
             this.Description = description;
             this.Closure = closure;
         }
 
+        /// <inheritdoc/>
         public bool Matches(TElement element)
             => this.Closure(element);
     }

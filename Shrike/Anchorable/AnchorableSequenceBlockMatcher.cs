@@ -51,6 +51,7 @@ namespace Nanoray.Shrike
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
+        /// <inheritdoc/>
         public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Find(SequenceBlockMatcherFindOccurence occurence, SequenceBlockMatcherFindBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
         {
             Dictionary<TPointerAnchor, int> anchoredPointers = new(this.AnchoredPointers);
@@ -64,30 +65,35 @@ namespace Nanoray.Shrike
             return new(findResult, anchoredPointers, this.AnchoredBlocks);
         }
 
+        /// <inheritdoc/>
         public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> AnchorBlock(TBlockAnchor anchor)
         {
             Dictionary<TBlockAnchor, Range> anchoredBlocks = new(this.AnchoredBlocks) { [anchor] = new(new(this.StartIndex()), new(this.EndIndex())) };
             return new(this.WrappedBlockMatcher, this.AnchoredPointers, anchoredBlocks);
         }
 
+        /// <inheritdoc/>
         public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Remove()
         {
             var wrapped = this.WrappedBlockMatcher.Remove();
             return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
         }
 
+        /// <inheritdoc/>
         public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Replace(IEnumerable<TElement> elements)
         {
             var wrapped = this.WrappedBlockMatcher.Replace(elements);
             return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
         }
 
-        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
+        /// <inheritdoc/>
+        public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
         {
             var wrapped = this.WrappedBlockMatcher.Insert(position, includeInsertionInResultingBounds, elements);
             return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
         }
 
+        /// <inheritdoc/>
         public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Do(Func<AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>> closure)
         {
 #if NET7_0_OR_GREATER

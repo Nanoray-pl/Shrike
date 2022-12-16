@@ -43,36 +43,42 @@ namespace Nanoray.Shrike
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
+        /// <inheritdoc/>
         public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> AnchorPointer(TPointerAnchor anchor)
         {
             Dictionary<TPointerAnchor, int> anchoredPointers = new(this.AnchoredPointers) { [anchor] = this.Index() };
             return new(this.WrappedPointerMatcher, anchoredPointers, this.AnchoredBlocks);
         }
 
+        /// <inheritdoc/>
         public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Remove()
         {
             var wrapped = this.WrappedPointerMatcher.Remove();
             return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
         }
 
+        /// <inheritdoc/>
         public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Replace(IEnumerable<TElement> elements)
         {
             var wrapped = this.WrappedPointerMatcher.Replace(elements);
             return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
         }
 
+        /// <inheritdoc/>
+        public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
+        {
+            var wrapped = this.WrappedPointerMatcher.Insert(position, includeInsertionInResultingBounds, elements);
+            return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
+        }
+
+        /// <inheritdoc/>
         public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Replace(TElement element)
         {
             var wrapped = this.WrappedPointerMatcher.Replace(element);
             return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
         }
 
-        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Insert(IEnumerable<TElement> elements)
-        {
-            var wrapped = this.WrappedPointerMatcher.Insert(elements);
-            return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
-        }
-
+        /// <inheritdoc/>
         public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Remove(SequenceMatcherPastBoundsDirection postRemovalPosition)
         {
             var wrapped = this.WrappedPointerMatcher.Remove(postRemovalPosition);

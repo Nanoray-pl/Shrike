@@ -42,6 +42,7 @@ namespace Nanoray.Shrike
         public int EndIndex()
             => this.StartIndex() + this.Length();
 
+        /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Remove()
         {
             List<TElement> result = new();
@@ -50,6 +51,7 @@ namespace Nanoray.Shrike
             return new(result, this.StartIndex(), 0);
         }
 
+        /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Replace(IEnumerable<TElement> elements)
         {
             List<TElement> result = new();
@@ -60,7 +62,8 @@ namespace Nanoray.Shrike
             return new(result, this.StartIndex(), lengthDifference + this.Length());
         }
 
-        public SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
+        /// <inheritdoc/>
+        public override SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
         {
             List<TElement> result = new();
             switch (position)
@@ -94,6 +97,7 @@ namespace Nanoray.Shrike
             }
         }
 
+        /// <inheritdoc/>
         public SequenceBlockMatcher<TElement> Do(Func<SequenceBlockMatcher<TElement>, SequenceBlockMatcher<TElement>> closure)
         {
 #if NET7_0_OR_GREATER

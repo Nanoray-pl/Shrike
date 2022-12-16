@@ -134,26 +134,7 @@ namespace Nanoray.Shrike.Tests
         }
 
         [Test]
-        public void TestPointerInsert()
-        {
-            var blockMatcher = new SequenceBlockMatcher<string>(
-                "a", "b", "c"
-            );
-
-            blockMatcher = blockMatcher
-                .PointerMatcherAtStart()
-                .Advance()
-                .Insert("1", "2", "3");
-
-            Assert.AreEqual(1, blockMatcher.StartIndex());
-            Assert.AreEqual(4, blockMatcher.EndIndex());
-            Assert.AreEqual(3, blockMatcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "1", "2", "3", "b", "c" }, blockMatcher.AllElements());
-            CollectionAssert.AreEqual(new string[] { "1", "2", "3" }, blockMatcher.Elements());
-        }
-
-        [Test]
-        public void TestBlockInsertBeforeIncludingInsertionInResultingBounds()
+        public void TestInsertBeforeIncludingInsertionInResultingBounds()
         {
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "b", "c"
@@ -170,7 +151,7 @@ namespace Nanoray.Shrike.Tests
         }
 
         [Test]
-        public void TestBlockInsertBeforeExcludingInsertionInResultingBounds()
+        public void TestInsertBeforeExcludingInsertionInResultingBounds()
         {
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "b", "c"

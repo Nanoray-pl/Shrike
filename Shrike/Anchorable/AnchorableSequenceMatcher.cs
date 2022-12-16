@@ -29,25 +29,32 @@ namespace Nanoray.Shrike
             => this.WrappedMatcher.AllElements();
 
 #if NET7_0_OR_GREATER
+        /// <inheritdoc/>
         public static AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)
             => new(TWrappedPointerMatcher.MakeNewPointerMatcher(allElements, index));
 
+        /// <inheritdoc/>
         public static AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length)
             => new(TWrappedBlockMatcher.MakeNewBlockMatcher(allElements, startIndex, length));
 #else
+        /// <inheritdoc/>
         public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewPointerMatcher(IEnumerable<TElement> allElements, int index)
             => new(this.WrappedMatcher.MakeNewPointerMatcher(allElements, index));
 
+        /// <inheritdoc/>
         public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeNewBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length)
             => new(this.WrappedMatcher.MakeNewBlockMatcher(allElements, startIndex, length));
 #endif
 
+        /// <inheritdoc/>
         public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakePointerMatcher(int index)
             => new(this.WrappedMatcher.MakePointerMatcher(index), this.AnchoredPointers, this.AnchoredBlocks);
 
+        /// <inheritdoc/>
         public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MakeBlockMatcher(int startIndex, int length)
             => new(this.WrappedMatcher.MakeBlockMatcher(startIndex, length), this.AnchoredPointers, this.AnchoredBlocks);
 
+        /// <inheritdoc/>
         public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MoveToPointerAnchor(TPointerAnchor anchor)
         {
             if (this.AnchoredPointers.TryGetValue(anchor, out int anchorIndex))
@@ -56,6 +63,7 @@ namespace Nanoray.Shrike
                 throw new SequenceMatcherException($"Unknown pointer anchor {anchor}.");
         }
 
+        /// <inheritdoc/>
         public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MoveToBlockAnchor(TBlockAnchor anchor)
         {
             if (this.AnchoredBlocks.TryGetValue(anchor, out var anchorRange))
@@ -64,8 +72,13 @@ namespace Nanoray.Shrike
                 throw new SequenceMatcherException($"Unknown block anchor {anchor}.");
         }
 
+        /// <inheritdoc/>
         public abstract AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Remove();
 
+        /// <inheritdoc/>
         public abstract AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Replace(IEnumerable<TElement> elements);
+
+        /// <inheritdoc/>
+        public abstract AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements);
     }
 }
