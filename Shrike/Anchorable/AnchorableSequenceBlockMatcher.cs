@@ -51,6 +51,19 @@ namespace Nanoray.Shrike
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
+        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Find(SequenceBlockMatcherFindOccurence occurence, SequenceBlockMatcherFindBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
+        {
+            Dictionary<TPointerAnchor, int> anchoredPointers = new(this.AnchoredPointers);
+            var findResult = this.WrappedBlockMatcher.Find(occurence, bounds, toFind);
+            for (int i = 0; i < toFind.Count; i++)
+            {
+                if (toFind[i] is not IAutoAnchorableElementMatch<TElement, TPointerAnchor> autoAnchorableMatch || autoAnchorableMatch.Anchor is null)
+                    continue;
+                anchoredPointers[autoAnchorableMatch.Anchor] = findResult.StartIndex() + i;
+            }
+            return new(findResult, anchoredPointers, this.AnchoredBlocks);
+        }
+
         public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> AnchorBlock(TBlockAnchor anchor)
         {
             Dictionary<TBlockAnchor, Range> anchoredBlocks = new(this.AnchoredBlocks) { [anchor] = new(new(this.StartIndex()), new(this.EndIndex())) };
