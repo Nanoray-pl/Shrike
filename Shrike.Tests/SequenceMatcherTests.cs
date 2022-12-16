@@ -219,5 +219,47 @@ namespace Nanoray.Shrike.Tests
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "1", "2", "3" }, blockMatcher.AllElements());
             CollectionAssert.AreEqual(new string[] { "a", "b", "c" }, blockMatcher.Elements());
         }
+
+        [Test]
+        public void TestFindFirst()
+        {
+            var blockMatcher = new SequenceBlockMatcher<string>(
+                "a", "bb", "ccc", "dd", "eee"
+            );
+
+            blockMatcher = blockMatcher
+                .Find(
+                    SequenceBlockMatcherFindOccurence.First, SequenceBlockMatcherFindBounds.WholeSequence,
+                    new ElementMatch<string>("two chars", e => e.Length == 2),
+                    new ElementMatch<string>("three chars", e => e.Length == 3)
+                );
+
+            Assert.AreEqual(1, blockMatcher.StartIndex());
+            Assert.AreEqual(3, blockMatcher.EndIndex());
+            Assert.AreEqual(2, blockMatcher.Length());
+            CollectionAssert.AreEqual(new string[] { "a", "bb", "ccc", "dd", "eee" }, blockMatcher.AllElements());
+            CollectionAssert.AreEqual(new string[] { "bb", "ccc" }, blockMatcher.Elements());
+        }
+
+        [Test]
+        public void TestFindLast()
+        {
+            var blockMatcher = new SequenceBlockMatcher<string>(
+                "a", "bb", "ccc", "dd", "eee"
+            );
+
+            blockMatcher = blockMatcher
+                .Find(
+                    SequenceBlockMatcherFindOccurence.Last, SequenceBlockMatcherFindBounds.WholeSequence,
+                    new ElementMatch<string>("two chars", e => e.Length == 2),
+                    new ElementMatch<string>("three chars", e => e.Length == 3)
+                );
+
+            Assert.AreEqual(3, blockMatcher.StartIndex());
+            Assert.AreEqual(5, blockMatcher.EndIndex());
+            Assert.AreEqual(2, blockMatcher.Length());
+            CollectionAssert.AreEqual(new string[] { "a", "bb", "ccc", "dd", "eee" }, blockMatcher.AllElements());
+            CollectionAssert.AreEqual(new string[] { "dd", "eee" }, blockMatcher.Elements());
+        }
     }
 }
