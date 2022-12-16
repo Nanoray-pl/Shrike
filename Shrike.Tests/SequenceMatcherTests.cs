@@ -1,8 +1,7 @@
 using System;
-using Nanoray.Shrike;
 using NUnit.Framework;
 
-namespace Shrike.Tests
+namespace Nanoray.Shrike.Tests
 {
     [TestFixture]
     internal sealed class SequenceMatcherTests

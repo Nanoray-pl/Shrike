@@ -96,4 +96,14 @@ namespace Nanoray.Shrike
             return new(current.WrappedBlockMatcher, anchoredPointers, anchoredBlocks);
         }
     }
+
+    public static class AnchorableSequenceBlockMatcherExt
+    {
+        public static AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> AsAnchorable<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>(this ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> self)
+            where TPointerAnchor : notnull
+            where TBlockAnchor : notnull
+            where TWrappedPointerMatcher : ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
+            where TWrappedBlockMatcher : ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
+            => new(self);
+    }
 }

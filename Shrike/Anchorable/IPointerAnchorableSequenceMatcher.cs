@@ -40,4 +40,12 @@ namespace Nanoray.Shrike
         }
 #endif
     }
+
+    public static class IPointerAnchorableSequencePointerMatcherSpecificTypeGenerators
+    {
+        public static TPointerMatcher AnchorPointer<TElement, TPointerMatcher, TBlockMatcher>(this IPointerAnchorableSequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher, Guid> self, out Guid anchor)
+            where TPointerMatcher : IPointerAnchorableSequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher, Guid>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.AnchorPointer(out anchor, () => Guid.NewGuid());
+    }
 }

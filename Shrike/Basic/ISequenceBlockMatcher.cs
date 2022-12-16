@@ -21,19 +21,19 @@ namespace Nanoray.Shrike
         where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
     {
         TPointerMatcher PointerMatcherBeforeStart()
-            => this.MakePointerMatcher(this.Length() == 0 ? this.StartIndex() : this.StartIndex() - 1);
+            => this.MakePointerMatcher(this.StartIndex() - 1);
 
         TPointerMatcher PointerMatcherAtStart()
             => this.MakePointerMatcher(this.StartIndex());
 
         TPointerMatcher PointerMatcherAtEnd()
-            => this.MakePointerMatcher(this.Length() == 0 ? this.EndIndex() : this.EndIndex() - 1);
+            => this.MakePointerMatcher(this.EndIndex() - 1);
 
         TPointerMatcher PointerMatcherAfterEnd()
             => this.MakePointerMatcher(this.EndIndex());
 
         TBlockMatcher BlockMatcherBeforeStart(int length = 0)
-            => this.MakeBlockMatcher((this.Length() == 0 ? this.StartIndex() : this.StartIndex() - 1) - length, length);
+            => this.MakeBlockMatcher(this.StartIndex() - length, length);
 
         TBlockMatcher BlockMatcherAfterEnd(int length = 0)
             => this.MakeBlockMatcher(this.EndIndex(), length);
