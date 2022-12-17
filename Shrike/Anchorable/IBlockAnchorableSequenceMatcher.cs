@@ -79,7 +79,7 @@ namespace Nanoray.Shrike
         /// <param name="anchor">The created anchor.</param>
         /// <returns>A new block matcher, with an additional anchor pointing at the current elements.</returns>
         public static TBlockMatcher AnchorBlock<TElement, TPointerMatcher, TBlockMatcher, TAnchor>(this IBlockAnchorableSequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor> self, out TAnchor anchor)
-            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : IBlockAnchorableSequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher, TAnchor>
             where TAnchor : notnull, IGenerable<TAnchor>
         {
