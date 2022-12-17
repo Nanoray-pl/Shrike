@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Nanoray.Shrike
 {
@@ -75,6 +74,7 @@ namespace Nanoray.Shrike
         /// <summary>
         /// The element this pointer matcher is pointing at.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
         /// <param name="self">The current matcher.</param>
         public static TElement Element<TElement>(this ISequencePointerMatcher<TElement> self)
             => self.Element();
@@ -82,6 +82,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Creates a block matcher pointing at the same element this pointer matcher is pointing at.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         public static TBlockMatcher BlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
@@ -91,6 +94,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Creates a pointer matcher pointing at another element offset from the current one.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="offset">The index offset from the current index.</param>
         public static TPointerMatcher Advance<TElement, TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher> self, int offset = 1)
@@ -101,6 +107,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Performs a provided set of operations on the element matched by this pointer matcher.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="closure">The set of operations to perform.</param>
         /// <returns>A new pointer matcher representing the state after performing the provided set of operations on the element matched by this pointer matcher.</returns>
@@ -115,6 +124,16 @@ namespace Nanoray.Shrike
     /// </summary>
     public static class ISequencePointerMatcherExt
     {
+        /// <summary>
+        /// Performs a provided set of operations a given amount of times on the element matched by this pointer matcher.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="times">The number of times this set of operations should be performed.</param>
+        /// <param name="closure">The set of operations to perform.</param>
+        /// <returns>A new pointer matcher representing the state after performing the provided set of operations on the element matched by this pointer matcher.</returns>
         public static TPointerMatcher Repeat<TElement, TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, int times, Func<TPointerMatcher, TPointerMatcher> closure)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>

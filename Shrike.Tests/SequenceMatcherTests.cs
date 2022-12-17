@@ -19,12 +19,12 @@ namespace Nanoray.Shrike.Tests
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "e" }, blockMatcher.AllElements());
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "e" }, blockMatcher.Elements());
 
-            var pointerMatcher = blockMatcher.PointerMatcherAtEnd();
+            var pointerMatcher = blockMatcher.PointerMatcherAtLast();
 
             Assert.AreEqual(4, pointerMatcher.Index());
             Assert.AreEqual("e", pointerMatcher.Element());
 
-            pointerMatcher = blockMatcher.PointerMatcherAtStart();
+            pointerMatcher = blockMatcher.PointerMatcherAtFirst();
 
             Assert.AreEqual(0, pointerMatcher.Index());
             Assert.AreEqual("a", pointerMatcher.Element());
@@ -44,7 +44,7 @@ namespace Nanoray.Shrike.Tests
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "b", "c"
             );
-            var pointerMatcher = blockMatcher.PointerMatcherAtStart();
+            var pointerMatcher = blockMatcher.PointerMatcherAtFirst();
 
             Assert.AreEqual(0, pointerMatcher.Index());
             Assert.AreEqual("a", pointerMatcher.Element());
@@ -70,7 +70,7 @@ namespace Nanoray.Shrike.Tests
             );
 
             var pointerMatcher = blockMatcher
-                .PointerMatcherAtStart()
+                .PointerMatcherAtFirst()
                 .Advance(2)
                 .Remove(postRemovalPosition: SequenceMatcherPastBoundsDirection.Before);
 
@@ -87,7 +87,7 @@ namespace Nanoray.Shrike.Tests
             );
 
             var pointerMatcher = blockMatcher
-                .PointerMatcherAtStart()
+                .PointerMatcherAtFirst()
                 .Advance(2)
                 .Remove(postRemovalPosition: SequenceMatcherPastBoundsDirection.After);
 
@@ -104,7 +104,7 @@ namespace Nanoray.Shrike.Tests
             );
 
             blockMatcher = blockMatcher
-                .PointerMatcherAtStart()
+                .PointerMatcherAtFirst()
                 .Advance(2)
                 .Remove();
 
@@ -210,7 +210,7 @@ namespace Nanoray.Shrike.Tests
 
             blockMatcher = blockMatcher
                 .Find(
-                    SequenceBlockMatcherFindOccurence.First, SequenceBlockMatcherFindBounds.WholeSequence,
+                    SequenceBlockMatcherFindOccurence.First, SequenceMatcherFindBounds.WholeSequence,
                     new ElementMatch<string>("two chars", e => e.Length == 2),
                     new ElementMatch<string>("three chars", e => e.Length == 3)
                 );
@@ -231,7 +231,7 @@ namespace Nanoray.Shrike.Tests
 
             blockMatcher = blockMatcher
                 .Find(
-                    SequenceBlockMatcherFindOccurence.Last, SequenceBlockMatcherFindBounds.WholeSequence,
+                    SequenceBlockMatcherFindOccurence.Last, SequenceMatcherFindBounds.WholeSequence,
                     new ElementMatch<string>("two chars", e => e.Length == 2),
                     new ElementMatch<string>("three chars", e => e.Length == 3)
                 );

@@ -4,16 +4,34 @@ using System.Linq;
 
 namespace Nanoray.Shrike
 {
+    /// <summary>
+    /// Represents a simple sequence block matcher.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
     public record SequenceBlockMatcher<TElement> : SequenceMatcher<TElement>, ISequenceBlockMatcher<TElement, SequencePointerMatcher<TElement>, SequenceBlockMatcher<TElement>>
     {
         private int StartIndexStorage { get; init; }
         private int LengthStorage { get; init; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SequenceBlockMatcher{TElement}"/> class with the given underlying elements, pointing at all of those elements.
+        /// </summary>
+        /// <param name="allElements">All underlying elements this sequence matcher is working with.</param>
         public SequenceBlockMatcher(IEnumerable<TElement> allElements) : this(allElements.ToList()) { }
 
-        public SequenceBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length) : this(allElements.ToList(), startIndex, length) { }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SequenceBlockMatcher{TElement}"/> class with the given underlying elements, pointing at all of those elements.
+        /// </summary>
+        /// <param name="allElements">All underlying elements this sequence matcher is working with.</param>
         public SequenceBlockMatcher(params TElement[] allElements) : this((IEnumerable<TElement>)allElements) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SequenceBlockMatcher{TElement}"/> class with the given underlying elements, pointing at the given range of elements.
+        /// </summary>
+        /// <param name="allElements">All underlying elements this sequence matcher is working with.</param>
+        /// <param name="startIndex">The starting index the block matcher should point at.</param>
+        /// <param name="length">The length of the range the block matcher should point at.</param>
+        public SequenceBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length) : this(allElements.ToList(), startIndex, length) { }
 
         private SequenceBlockMatcher(IReadOnlyList<TElement> allElements) : this(allElements, 0, allElements.Count) { }
 

@@ -2,10 +2,18 @@ using System.Collections.Generic;
 
 namespace Nanoray.Shrike
 {
+    /// <summary>
+    /// The base type representing simple sequence matchers.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
     public abstract record SequenceMatcher<TElement> : ISequenceMatcher<TElement, SequencePointerMatcher<TElement>, SequenceBlockMatcher<TElement>>
     {
         private IReadOnlyList<TElement> AllElementsStorage { get; init; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SequenceMatcher{TElement}"/> class with the given underlying elements.
+        /// </summary>
+        /// <param name="allElements">All underlying elements this sequence matcher is working with.</param>
         protected internal SequenceMatcher(IReadOnlyList<TElement> allElements)
         {
             this.AllElementsStorage = allElements;

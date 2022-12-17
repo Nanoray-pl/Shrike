@@ -3,6 +3,14 @@ using System.Collections.Generic;
 
 namespace Nanoray.Shrike
 {
+    /// <summary>
+    /// The base type representing anchorable sequence matchers.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+    /// <typeparam name="TPointerAnchor">The pointer anchor type.</typeparam>
+    /// <typeparam name="TBlockAnchor">The block anchor type.</typeparam>
+    /// <typeparam name="TWrappedPointerMatcher">The underlying pointer matcher type.</typeparam>
+    /// <typeparam name="TWrappedBlockMatcher">The underlying block matcher type.</typeparam>
     public abstract record AnchorableSequenceMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> :
         IPointerAnchorableSequenceMatcher<TElement, AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, TPointerAnchor>,
         IBlockAnchorableSequenceMatcher<TElement, AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, TBlockAnchor>
@@ -11,12 +19,27 @@ namespace Nanoray.Shrike
         where TWrappedPointerMatcher : ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
         where TWrappedBlockMatcher : ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
     {
+        /// <summary>
+        /// The underlying matcher.
+        /// </summary>
         protected internal ISequenceMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> WrappedMatcher { get; init; }
 
+        /// <summary>
+        /// The dictionary of all anchored pointers.
+        /// </summary>
         protected internal IReadOnlyDictionary<TPointerAnchor, int> AnchoredPointers { get; init; }
 
+        /// <summary>
+        /// The dictionary of all anchored blocks.
+        /// </summary>
         protected internal IReadOnlyDictionary<TBlockAnchor, Range> AnchoredBlocks { get; init; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AnchorableSequenceMatcher{TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher}"/> class.
+        /// </summary>
+        /// <param name="wrappedMatcher">The underlying matcher.</param>
+        /// <param name="anchoredPointers">The dictionary of all anchored pointers.</param>
+        /// <param name="anchoredBlocks">The dictionary of all anchored blocks.</param>
         protected internal AnchorableSequenceMatcher(ISequenceMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> wrappedMatcher, IReadOnlyDictionary<TPointerAnchor, int> anchoredPointers, IReadOnlyDictionary<TBlockAnchor, Range> anchoredBlocks)
         {
             this.WrappedMatcher = wrappedMatcher;

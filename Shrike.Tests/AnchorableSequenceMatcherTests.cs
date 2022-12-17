@@ -19,12 +19,12 @@ namespace Nanoray.Shrike.Tests
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "e" }, blockMatcher.AllElements());
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "e" }, blockMatcher.Elements());
 
-            var pointerMatcher = blockMatcher.PointerMatcherAtEnd();
+            var pointerMatcher = blockMatcher.PointerMatcherAtLast();
 
             Assert.AreEqual(4, pointerMatcher.Index());
             Assert.AreEqual("e", pointerMatcher.Element());
 
-            pointerMatcher = blockMatcher.PointerMatcherAtStart();
+            pointerMatcher = blockMatcher.PointerMatcherAtFirst();
 
             Assert.AreEqual(0, pointerMatcher.Index());
             Assert.AreEqual("a", pointerMatcher.Element());
@@ -46,11 +46,11 @@ namespace Nanoray.Shrike.Tests
             ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
 
             var pointerMatcher = blockMatcher
-                .PointerMatcherAtStart()
+                .PointerMatcherAtFirst()
                 .Advance()
                 .AnchorPointer(out var startPlusOneAnchor)
                 .MakeAllElementsBlockMatcher()
-                .PointerMatcherAtEnd()
+                .PointerMatcherAtLast()
                 .Advance(-1)
                 .AnchorPointer(out var endMinusOneAnchor);
 
@@ -73,7 +73,7 @@ namespace Nanoray.Shrike.Tests
             ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
 
             blockMatcher = blockMatcher
-                .PointerMatcherAtStart()
+                .PointerMatcherAtFirst()
                 .Advance()
                 .AnchorPointer(out var oneAnchor)
                 .Advance()
@@ -81,7 +81,7 @@ namespace Nanoray.Shrike.Tests
                 .Advance()
                 .AnchorPointer(out var threeAnchor)
                 .MakeAllElementsBlockMatcher()
-                .PointerMatcherAtStart()
+                .PointerMatcherAtFirst()
                 .Advance(2)
                 .Remove();
 
@@ -106,11 +106,11 @@ namespace Nanoray.Shrike.Tests
             ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
 
             blockMatcher = blockMatcher
-                .BlockMatcherBeforeStart()
+                .BlockMatcherBeforeFirst()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 2)
                 .AnchorBlock(out var startAnchor)
                 .MakeAllElementsBlockMatcher()
-                .BlockMatcherAfterEnd()
+                .BlockMatcherAfterLast()
                 .Encompass(SequenceMatcherPastBoundsDirection.Before, 2)
                 .AnchorBlock(out var endAnchor)
                 .MakeAllElementsBlockMatcher();
@@ -140,17 +140,17 @@ namespace Nanoray.Shrike.Tests
             ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
 
             blockMatcher = blockMatcher
-                .BlockMatcherBeforeStart()
+                .BlockMatcherBeforeFirst()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 2)
                 .AnchorBlock(out var startAnchor)
                 .MakeAllElementsBlockMatcher()
-                .PointerMatcherAtStart()
+                .PointerMatcherAtFirst()
                 .Advance(3)
                 .BlockMatcher()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 1)
                 .AnchorBlock(out var middleAnchor)
                 .MakeAllElementsBlockMatcher()
-                .BlockMatcherAfterEnd()
+                .BlockMatcherAfterLast()
                 .Encompass(SequenceMatcherPastBoundsDirection.Before, 2)
                 .AnchorBlock(out var endAnchor)
                 .MakeAllElementsBlockMatcher()

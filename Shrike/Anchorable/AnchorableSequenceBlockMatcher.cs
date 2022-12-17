@@ -4,6 +4,14 @@ using System.Linq;
 
 namespace Nanoray.Shrike
 {
+    /// <summary>
+    /// Represents an anchorable sequence block matcher.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+    /// <typeparam name="TPointerAnchor">The pointer anchor type.</typeparam>
+    /// <typeparam name="TBlockAnchor">The block anchor type.</typeparam>
+    /// <typeparam name="TWrappedPointerMatcher">The underlying pointer matcher type.</typeparam>
+    /// <typeparam name="TWrappedBlockMatcher">The underlying block matcher type.</typeparam>
     public record AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> :
         AnchorableSequenceMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>,
         IBlockAnchorableSequenceBlockMatcher<TElement, AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, TBlockAnchor>
@@ -12,10 +20,23 @@ namespace Nanoray.Shrike
         where TWrappedPointerMatcher : ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
         where TWrappedBlockMatcher : ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
     {
+        /// <summary>
+        /// The underlying block matcher.
+        /// </summary>
         protected internal ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> WrappedBlockMatcher { get; init; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AnchorableSequenceBlockMatcher{TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher}"/> class.
+        /// </summary>
+        /// <param name="wrappedMatcher"></param>
         public AnchorableSequenceBlockMatcher(ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> wrappedMatcher) : this(wrappedMatcher, new Dictionary<TPointerAnchor, int>(), new Dictionary<TBlockAnchor, Range>()) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AnchorableSequenceBlockMatcher{TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher}"/> class.
+        /// </summary>
+        /// <param name="wrappedMatcher">The underlying matcher.</param>
+        /// <param name="anchoredPointers">The dictionary of all anchored pointers.</param>
+        /// <param name="anchoredBlocks">The dictionary of all anchored blocks.</param>
         protected internal AnchorableSequenceBlockMatcher(ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> wrappedMatcher, IReadOnlyDictionary<TPointerAnchor, int> anchoredPointers, IReadOnlyDictionary<TBlockAnchor, Range> anchoredBlocks) : base(wrappedMatcher, anchoredPointers, anchoredBlocks)
         {
             this.WrappedBlockMatcher = wrappedMatcher;
@@ -52,7 +73,7 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
-        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Find(SequenceBlockMatcherFindOccurence occurence, SequenceBlockMatcherFindBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
+        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Find(SequenceBlockMatcherFindOccurence occurence, SequenceMatcherFindBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
         {
             Dictionary<TPointerAnchor, int> anchoredPointers = new(this.AnchoredPointers);
             var findResult = this.WrappedBlockMatcher.Find(occurence, bounds, toFind);
@@ -116,8 +137,19 @@ namespace Nanoray.Shrike
         }
     }
 
+    /// <summary>
+    /// A static class hosting additional extensions for the <see cref="ISequenceBlockMatcher{TElement, TPointerMatcher, TBlockMatcher}"/> type, relating to the functionality of the <see cref="AnchorableSequenceBlockMatcher{TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher}"/> type.
+    /// </summary>
     public static class AnchorableSequenceBlockMatcherExt
     {
+        /// <summary>
+        /// Creates an anchorable block matcher representing the same state as this matcher.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerAnchor">The pointer anchor type.</typeparam>
+        /// <typeparam name="TBlockAnchor">The block anchor type.</typeparam>
+        /// <typeparam name="TWrappedPointerMatcher">The underlying pointer matcher type.</typeparam>
+        /// <typeparam name="TWrappedBlockMatcher">The underlying block matcher type.</typeparam>
         public static AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> AsAnchorable<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>(this ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> self)
             where TPointerAnchor : notnull
             where TBlockAnchor : notnull

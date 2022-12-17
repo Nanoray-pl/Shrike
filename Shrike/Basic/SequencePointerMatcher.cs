@@ -4,10 +4,19 @@ using System.Linq;
 
 namespace Nanoray.Shrike
 {
+    /// <summary>
+    /// Represents a simple sequence pointer matcher.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
     public record SequencePointerMatcher<TElement> : SequenceMatcher<TElement>, ISequencePointerMatcher<TElement, SequencePointerMatcher<TElement>, SequenceBlockMatcher<TElement>>
     {
         private int IndexStorage { get; init; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SequencePointerMatcher{TElement}"/> class with the given underlying elements, pointing at an element at the given index.
+        /// </summary>
+        /// <param name="allElements">All underlying elements this sequence matcher is working with.</param>
+        /// <param name="index">The index this pointer matcher should point at.</param>
         public SequencePointerMatcher(IEnumerable<TElement> allElements, int index) : this(allElements.ToList(), index) { }
 
         private SequencePointerMatcher(IReadOnlyList<TElement> allElements, int index) : base(allElements)

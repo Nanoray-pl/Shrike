@@ -140,6 +140,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Creates a block matcher encompassing all underlying elements this sequence matcher is working with.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         public static TBlockMatcher MakeAllElementsBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
@@ -149,6 +152,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Creates a pointer matcher encompassing all underlying elements and pointing at a specific index.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="index">The index the created pointer matcher should point at.</param>
         public static TPointerMatcher MakePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, int index)
@@ -159,6 +165,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Creates a block matcher encompassing all underlying elements and pointing at a specific range.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="startIndex">The starting index the created block matcher should point at.</param>
         /// <param name="length">The length of the range the created block matcher should point at.</param>
@@ -170,6 +179,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Creates a block matcher encompassing all underlying elements and pointing at a specific range.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="range">The range the created block matcher should point at.</param>
         public static TBlockMatcher MakeBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, Range range)
@@ -181,6 +193,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Creates an unrelated block matcher.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="allElements">The elements the new block matcher should work with.</param>
         /// <param name="range">The range the created block matcher should point at.</param>
@@ -199,6 +214,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Performs a replace operation on the elements matched by this sequence matcher.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="elements">The new elements to replace the elements currently matched by this sequence matcher.</param>
         /// <returns>A new block matcher representing the state after replacing the matched elements with the new elements.</returns>
@@ -210,6 +228,9 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Performs an insert operation before/after the elements matched by this sequence matcher.
         /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="position">The position the new elements should be inserted at.</param>
         /// <param name="includeInsertionInResultingBounds">Whether the resulting block matcher should also include the newly inserted elements in the range it points at.</param>
