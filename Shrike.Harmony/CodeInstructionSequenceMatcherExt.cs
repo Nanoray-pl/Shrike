@@ -3,9 +3,20 @@ using System.Reflection.Emit;
 
 namespace Nanoray.Shrike.Harmony
 {
+    /// <summary>
+    /// A static class hosting additional extensions for <see cref="ISequenceMatcher{TElement, TPointerMatcher, TBlockMatcher}"/> with <see cref="CodeInstruction"/> elements.
+    /// </summary>
     public static class CodeInstructionSequenceMatcherExt
     {
-        public static TPointerMatcher CreateLabel<TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, Label label)
+        /// <summary>
+        /// Moves to an instruction with the given label.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="label">The label to move to.</param>
+        /// <returns>A new pointer matcher, pointing at instruction with the given label.</returns>
+        public static TPointerMatcher MoveToLabel<TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, Label label)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {

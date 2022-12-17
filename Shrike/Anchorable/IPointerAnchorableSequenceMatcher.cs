@@ -18,7 +18,7 @@ namespace Nanoray.Shrike
         /// Moves to an anchored pointer.
         /// </summary>
         /// <param name="anchor">The anchor to move to.</param>
-        /// <returns>A new pointer matcher, pointing at an pointer anchored earlier.</returns>
+        /// <returns>A new pointer matcher, pointing at a pointer anchored earlier.</returns>
         TPointerMatcher MoveToPointerAnchor(TAnchor anchor);
     }
 

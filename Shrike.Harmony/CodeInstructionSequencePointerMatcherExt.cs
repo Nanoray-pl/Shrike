@@ -4,9 +4,20 @@ using HarmonyLib;
 
 namespace Nanoray.Shrike.Harmony
 {
+    /// <summary>
+    /// A static class hosting additional extensions for <see cref="ISequencePointerMatcher{TElement, TPointerMatcher, TBlockMatcher}"/> with <see cref="CodeInstruction"/> elements.
+    /// </summary>
     public static class CodeInstructionSequencePointerMatcherExt
     {
-        public static TPointerMatcher AddLabel<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, Label label)
+        /// <summary>
+        /// Add a label to the current instruction.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="label">The label to add.</param>
+        /// <returns>A new pointer matcher, with a modified instruction including the given label.</returns>
+        public static TPointerMatcher AddLabel<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, Label label)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
@@ -24,7 +35,16 @@ namespace Nanoray.Shrike.Harmony
 #endif
         }
 
-        public static TPointerMatcher CreateLabel<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, ILGenerator il, out Label label)
+        /// <summary>
+        /// Creates a new label and adds it to the current instruction.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="il">The <see cref="ILGenerator"/> to use.</param>
+        /// <param name="label">The newly created label.</param>
+        /// <returns>A new pointer matcher, with a modified instruction including the given label.</returns>
+        public static TPointerMatcher CreateLabel<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, ILGenerator il, out Label label)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
@@ -32,10 +52,18 @@ namespace Nanoray.Shrike.Harmony
                 throw new SequenceMatcherException("No instruction to add label to (the pointer is past all instructions).");
 
             label = il.DefineLabel();
-            return self.AddLabel<TPointerMatcher, TBlockMatcher>(label);
+            return self.AddLabel(label);
         }
 
-        public static TPointerMatcher TryExtractBranchTarget<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, out Label? label)
+        /// <summary>
+        /// Tries to extract a branch instruction target label.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="label">The extracted label, or <c>null</c>.</param>
+        /// <returns>The current matcher.</returns>
+        public static TPointerMatcher TryExtractBranchTarget<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out Label? label)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
@@ -43,10 +71,18 @@ namespace Nanoray.Shrike.Harmony
                 label = (Label)self.Element().operand;
             else
                 label = null;
-            return self;
+            return self.MakePointerMatcher(self.Index());
         }
 
-        public static TPointerMatcher ExtractBranchTarget<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, out Label label)
+        /// <summary>
+        /// Extracts a branch instruction target label.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="label">The extracted label.</param>
+        /// <returns>The current matcher.</returns>
+        public static TPointerMatcher ExtractBranchTarget<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out Label label)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
@@ -54,10 +90,18 @@ namespace Nanoray.Shrike.Harmony
                 label = (Label)self.Element().operand;
             else
                 throw new SequenceMatcherException($"{self.Element()} is not a branch instruction.");
-            return self;
+            return self.MakePointerMatcher(self.Index());
         }
 
-        public static TPointerMatcher TryCreateLdlocInstruction<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, out CodeInstruction? instruction)
+        /// <summary>
+        /// Tries to create an <c>ldloc</c> instruction referencing the same local variable the current instruction does.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="instruction">The created instruction, or <c>null</c>.</param>
+        /// <returns>The current matcher.</returns>
+        public static TPointerMatcher TryCreateLdlocInstruction<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out CodeInstruction? instruction)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
@@ -73,21 +117,37 @@ namespace Nanoray.Shrike.Harmony
                 instruction = new CodeInstruction(OpCodes.Ldloc, ILMatches.ExtractLocalIndex(self.Element().operand)!.Value);
             else
                 instruction = null;
-            return self;
+            return self.MakePointerMatcher(self.Index());
         }
 
-        public static TPointerMatcher CreateLdlocInstruction<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, out CodeInstruction instruction)
+        /// <summary>
+        /// Creates an <c>ldloc</c> instruction referencing the same local variable the current instruction does.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="instruction">The created instruction.</param>
+        /// <returns>The current matcher.</returns>
+        public static TPointerMatcher CreateLdlocInstruction<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out CodeInstruction instruction)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
-            self.TryCreateLdlocInstruction<TPointerMatcher, TBlockMatcher>(out var tryInstruction);
+            self.TryCreateLdlocInstruction(out var tryInstruction);
             if (tryInstruction is null)
                 throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
             instruction = tryInstruction;
-            return self;
+            return self.MakePointerMatcher(self.Index());
         }
 
-        public static TPointerMatcher TryCreateStlocInstruction<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, out CodeInstruction? instruction)
+        /// <summary>
+        /// Tries to create an <c>stloc</c> instruction referencing the same local variable the current instruction does.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="instruction">The created instruction, or <c>null</c>.</param>
+        /// <returns>The current matcher.</returns>
+        public static TPointerMatcher TryCreateStlocInstruction<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out CodeInstruction? instruction)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
@@ -103,21 +163,37 @@ namespace Nanoray.Shrike.Harmony
                 instruction = new CodeInstruction(OpCodes.Stloc, ILMatches.ExtractLocalIndex(self.Element().operand)!.Value);
             else
                 instruction = null;
-            return self;
+            return self.MakePointerMatcher(self.Index());
         }
 
-        public static TPointerMatcher CreateStlocInstruction<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, out CodeInstruction instruction)
+        /// <summary>
+        /// Creates an <c>stloc</c> instruction referencing the same local variable the current instruction does.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="instruction">The created instruction.</param>
+        /// <returns>The current matcher.</returns>
+        public static TPointerMatcher CreateStlocInstruction<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out CodeInstruction instruction)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
-            self.TryCreateStlocInstruction<TPointerMatcher, TBlockMatcher>(out var tryInstruction);
+            self.TryCreateStlocInstruction(out var tryInstruction);
             if (tryInstruction is null)
                 throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
             instruction = tryInstruction;
-            return self;
+            return self.MakePointerMatcher(self.Index());
         }
 
-        public static TPointerMatcher TryCreateLdlocaInstruction<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, out CodeInstruction? instruction)
+        /// <summary>
+        /// Tries to create an <c>ldloc.a</c> instruction referencing the same local variable the current instruction does.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="instruction">The created instruction, or <c>null</c>.</param>
+        /// <returns>The current matcher.</returns>
+        public static TPointerMatcher TryCreateLdlocaInstruction<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out CodeInstruction? instruction)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
@@ -133,18 +209,26 @@ namespace Nanoray.Shrike.Harmony
                 instruction = new CodeInstruction(OpCodes.Ldloca, ILMatches.ExtractLocalIndex(self.Element().operand)!.Value);
             else
                 instruction = null;
-            return self;
+            return self.MakePointerMatcher(self.Index());
         }
 
-        public static TPointerMatcher CreateLdlocaInstruction<TPointerMatcher, TBlockMatcher>(this TPointerMatcher self, out CodeInstruction instruction)
+        /// <summary>
+        /// Creates an <c>ldloc.a</c> instruction referencing the same local variable the current instruction does.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="instruction">The created instruction.</param>
+        /// <returns>The current matcher.</returns>
+        public static TPointerMatcher CreateLdlocaInstruction<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out CodeInstruction instruction)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
-            self.TryCreateLdlocaInstruction<TPointerMatcher, TBlockMatcher>(out var tryInstruction);
+            self.TryCreateLdlocaInstruction(out var tryInstruction);
             if (tryInstruction is null)
                 throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
             instruction = tryInstruction;
-            return self;
+            return self.MakePointerMatcher(self.Index());
         }
     }
 }
