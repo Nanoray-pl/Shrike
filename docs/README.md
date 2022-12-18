@@ -3,7 +3,7 @@ A generic sequence matching library, with an additional Harmony-IL-tailored subl
 
 ## Installation
 
-Reference [the `Nanoray.Shrike` NuGet package](https://www.nuget.org/packages/Nanoray.Shrike) in your project.
+Reference [the `Nanoray.Shrike` NuGet package](https://www.nuget.org/packages/Shrike) in your project.
 
 The NuGet package is compatible with .NET 5+, with some small API changes when using with .NET 7+.
 
