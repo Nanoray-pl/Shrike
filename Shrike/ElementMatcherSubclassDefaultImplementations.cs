@@ -20,10 +20,12 @@ namespace Nanoray.Shrike
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             => element switch
             {
+                SequenceMatcherRelativeElement.FirstInWholeSequence => self.MakePointerMatcher(0),
                 SequenceMatcherRelativeElement.BeforeFirst => self.MakePointerMatcher(self.Index() - 1),
                 SequenceMatcherRelativeElement.First => self.MakePointerMatcher(self.Index()),
                 SequenceMatcherRelativeElement.Last => self.MakePointerMatcher(self.Index()),
                 SequenceMatcherRelativeElement.AfterLast => self.MakePointerMatcher(self.Index() + 1),
+                SequenceMatcherRelativeElement.LastInWholeSequence => self.MakePointerMatcher(self.AllElements().Count - 1),
                 _ => throw new ArgumentException($"{nameof(SequenceMatcherRelativeElement)} has an invalid value."),
             };
 
@@ -40,10 +42,12 @@ namespace Nanoray.Shrike
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             => element switch
             {
+                SequenceMatcherRelativeElement.FirstInWholeSequence => self.MakePointerMatcher(0),
                 SequenceMatcherRelativeElement.BeforeFirst => self.MakePointerMatcher(self.StartIndex() - 1),
                 SequenceMatcherRelativeElement.First => self.MakePointerMatcher(self.StartIndex()),
                 SequenceMatcherRelativeElement.Last => self.MakePointerMatcher(self.EndIndex() - 1),
                 SequenceMatcherRelativeElement.AfterLast => self.MakePointerMatcher(self.EndIndex()),
+                SequenceMatcherRelativeElement.LastInWholeSequence => self.MakePointerMatcher(self.AllElements().Count - 1),
                 _ => throw new ArgumentException($"{nameof(SequenceMatcherRelativeElement)} has an invalid value."),
             };
 

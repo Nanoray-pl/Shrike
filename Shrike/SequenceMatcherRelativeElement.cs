@@ -6,6 +6,11 @@ namespace Nanoray.Shrike
     public enum SequenceMatcherRelativeElement
     {
         /// <summary>
+        /// The very first element of the whole sequence.
+        /// </summary>
+        FirstInWholeSequence,
+
+        /// <summary>
         /// The element before the first element matched by a sequence matcher.
         /// </summary>
         BeforeFirst,
@@ -24,5 +29,10 @@ namespace Nanoray.Shrike
         /// The element after the last element matched by a sequence matcher.
         /// </summary>
         AfterLast,
+
+        /// <summary>
+        /// The very last element of the whole sequence.
+        /// </summary>
+        LastInWholeSequence,
     }
 }

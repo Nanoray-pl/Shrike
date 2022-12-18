@@ -49,8 +49,7 @@ namespace Nanoray.Shrike.Tests
                 .PointerMatcher(SequenceMatcherRelativeElement.First)
                 .Advance()
                 .AnchorPointer(out var startPlusOneAnchor)
-                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
-                .PointerMatcher(SequenceMatcherRelativeElement.Last)
+                .PointerMatcher(SequenceMatcherRelativeElement.LastInWholeSequence)
                 .Advance(-1)
                 .AnchorPointer(out var endMinusOneAnchor);
 
@@ -80,8 +79,7 @@ namespace Nanoray.Shrike.Tests
                 .AnchorPointer(out var twoAnchor)
                 .Advance()
                 .AnchorPointer(out var threeAnchor)
-                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
-                .PointerMatcher(SequenceMatcherRelativeElement.First)
+                .PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence)
                 .Advance(2)
                 .Remove();
 
@@ -143,8 +141,7 @@ namespace Nanoray.Shrike.Tests
                 .BlockMatcherBeforeFirst()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 2)
                 .AnchorBlock(out var startAnchor)
-                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
-                .PointerMatcher(SequenceMatcherRelativeElement.First)
+                .PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence)
                 .Advance(3)
                 .BlockMatcher()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 1)
