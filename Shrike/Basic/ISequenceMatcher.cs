@@ -136,6 +136,49 @@ namespace Nanoray.Shrike
         TBlockMatcher MakeNewBlockMatcher(IEnumerable<TElement> allElements, Range range)
             => this.MakeNewBlockMatcher(allElements, range.Start.Value, range.End.Value - range.Start.Value);
 #endif
+
+        /// <summary>
+        /// Performs a provided set of operations on each set of elements matching the given criteria.
+        /// </summary>
+        /// <param name="bounds">The bounds in which to do the search.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <param name="closure">The set of operations to perform.</param>
+        /// <param name="minExpectedOccurences">The minimum amount of expected occurences. If less are found, the method throws.</param>
+        /// <param name="maxExpectedOccurences">The maximum amount of expected occurences. If more are found, the method throws.</param>
+        /// <returns>A new block matcher representing the state after performing the provided set of operations on each set of elements matching the given criteria. The new block matcher points at the whole range that was searched against.</returns>
+        TBlockMatcher ForEach(SequenceMatcherRelativeBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind, Func<TBlockMatcher, TBlockMatcher> closure, int minExpectedOccurences = 0, int maxExpectedOccurences = int.MaxValue)
+        {
+            var matcher = this.BlockMatcher(bounds);
+            bounds = SequenceMatcherRelativeBounds.Enclosed;
+            int foundOccurences = 0;
+
+            matcher = matcher
+                .Do(matcher =>
+                {
+                    while (true)
+                    {
+                        try
+                        {
+                            matcher = matcher
+                                .Find(SequenceBlockMatcherFindOccurence.First, bounds, toFind)
+                                .Do(closure);
+                            foundOccurences++;
+                            if (bounds is not SequenceMatcherRelativeBounds.Before or SequenceMatcherRelativeBounds.After)
+                                bounds = SequenceMatcherRelativeBounds.After;
+                        }
+                        catch (SequenceMatcherException)
+                        {
+                            return matcher;
+                        }
+                    }
+                });
+
+            if (foundOccurences < minExpectedOccurences)
+                throw new SequenceMatcherException($"ForEach operation expected at least {minExpectedOccurences} occurence(s), but found {foundOccurences}.");
+            if (foundOccurences > maxExpectedOccurences)
+                throw new SequenceMatcherException($"ForEach operation expected at most {maxExpectedOccurences} occurence(s), but found {foundOccurences}.");
+            return matcher;
+        }
     }
 
     /// <summary>
@@ -198,6 +241,24 @@ namespace Nanoray.Shrike
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             => self.MakeNewBlockMatcher(allElements, range);
 #endif
+
+        /// <summary>
+        /// Performs a provided set of operations on each set of elements matching the given criteria.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="bounds">The bounds in which to do the search.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <param name="closure">The set of operations to perform.</param>
+        /// <param name="minExpectedOccurences">The minimum amount of expected occurences. If less are found, the method throws.</param>
+        /// <param name="maxExpectedOccurences">The maximum amount of expected occurences. If more are found, the method throws.</param>
+        /// <returns>A new block matcher representing the state after performing the provided set of operations on each set of elements matching the given criteria. The new block matcher points at the whole range that was searched against.</returns>
+        public static TBlockMatcher ForEach<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherRelativeBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind, Func<TBlockMatcher, TBlockMatcher> closure, int minExpectedOccurences = 0, int maxExpectedOccurences = int.MaxValue)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.ForEach(bounds, toFind, closure, minExpectedOccurences, maxExpectedOccurences);
     }
 
     /// <summary>

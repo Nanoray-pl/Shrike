@@ -242,5 +242,29 @@ namespace Nanoray.Shrike.Tests
             CollectionAssert.AreEqual(new string[] { "a", "bb", "ccc", "dd", "eee" }, blockMatcher.AllElements());
             CollectionAssert.AreEqual(new string[] { "dd", "eee" }, blockMatcher.Elements());
         }
+
+        [Test]
+        public void TestForEachRemove()
+        {
+            var blockMatcher = new SequenceBlockMatcher<string>(
+                "a", "bb", "ccc", "dd", "eee"
+            );
+
+            blockMatcher = blockMatcher
+                .ForEach(
+                    SequenceMatcherRelativeBounds.WholeSequence,
+                    new IElementMatch<string>[]
+                    {
+                        new ElementMatch<string>("two chars", e => e.Length == 2)
+                    },
+                    matcher => matcher.Remove()
+                );
+
+            Assert.AreEqual(0, blockMatcher.StartIndex());
+            Assert.AreEqual(3, blockMatcher.EndIndex());
+            Assert.AreEqual(3, blockMatcher.Length());
+            CollectionAssert.AreEqual(new string[] { "a", "ccc", "eee" }, blockMatcher.AllElements());
+            CollectionAssert.AreEqual(new string[] { "a", "ccc", "eee" }, blockMatcher.Elements());
+        }
     }
 }
