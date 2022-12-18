@@ -96,6 +96,12 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
+        public abstract AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> PointerMatcher(SequenceMatcherRelativeElement element);
+
+        /// <inheritdoc/>
+        public abstract AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> BlockMatcher(SequenceMatcherRelativeBounds bounds);
+
+        /// <inheritdoc/>
         public abstract AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Remove();
 
         /// <inheritdoc/>

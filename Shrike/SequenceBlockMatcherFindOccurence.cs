@@ -13,6 +13,6 @@ namespace Nanoray.Shrike
         /// <summary>
         /// The last occurence.
         /// </summary>
-        Last
+        Last,
     }
 }

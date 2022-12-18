@@ -13,6 +13,6 @@ namespace Nanoray.Shrike
         /// <summary>
         /// Elements after the elements pointed at.
         /// </summary>
-        After
+        After,
     }
 }

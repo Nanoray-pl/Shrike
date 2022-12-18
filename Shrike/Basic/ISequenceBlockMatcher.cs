@@ -43,30 +43,6 @@ namespace Nanoray.Shrike
         where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
     {
         /// <summary>
-        /// Creates a pointer matcher pointing at the element just before the first element this block matcher is pointing at.
-        /// </summary>
-        TPointerMatcher PointerMatcherBeforeFirst()
-            => this.MakePointerMatcher(this.StartIndex() - 1);
-
-        /// <summary>
-        /// Creates a pointer matcher pointing at the first element this block matcher is pointing at.
-        /// </summary>
-        TPointerMatcher PointerMatcherAtFirst()
-            => this.MakePointerMatcher(this.StartIndex());
-
-        /// <summary>
-        /// Creates a pointer matcher pointing at the last element this block matcher is pointing at.
-        /// </summary>
-        TPointerMatcher PointerMatcherAtLast()
-            => this.MakePointerMatcher(this.EndIndex() - 1);
-
-        /// <summary>
-        /// Creates a pointer matcher pointing at the element just after the last element this block matcher is pointing at.
-        /// </summary>
-        TPointerMatcher PointerMatcherAfterLast()
-            => this.MakePointerMatcher(this.EndIndex());
-
-        /// <summary>
         /// Creates a block matcher pointing at the elements just before the first element this block matcher is pointing at.
         /// </summary>
         /// <param name="length">How many elements before the first element this block matcher is pointing at to look at.</param>
@@ -95,7 +71,7 @@ namespace Nanoray.Shrike
         TBlockMatcher Find(IReadOnlyList<IElementMatch<TElement>> toFind)
             => this.Find(
                 SequenceBlockMatcherFindOccurence.First,
-                this.StartIndex() == 0 && this.Length() == this.AllElements().Count ? SequenceMatcherFindBounds.Enclosed : SequenceMatcherFindBounds.After,
+                this.StartIndex() == 0 && this.Length() == this.AllElements().Count ? SequenceMatcherRelativeBounds.Enclosed : SequenceMatcherRelativeBounds.After,
                 toFind
             );
 
@@ -106,37 +82,37 @@ namespace Nanoray.Shrike
         /// <param name="bounds">The bounds in which to do the search.</param>
         /// <param name="toFind">The sequence of criteria to find.</param>
         /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
-        TBlockMatcher Find(SequenceBlockMatcherFindOccurence occurence, SequenceMatcherFindBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
+        TBlockMatcher Find(SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
         {
             int startIndex, endIndex;
             switch (bounds)
             {
-                case SequenceMatcherFindBounds.Before:
+                case SequenceMatcherRelativeBounds.Before:
                     startIndex = 0;
                     endIndex = this.StartIndex();
                     break;
-                case SequenceMatcherFindBounds.BeforeOrEnclosed:
+                case SequenceMatcherRelativeBounds.BeforeOrEnclosed:
                     startIndex = 0;
                     endIndex = this.EndIndex();
                     break;
-                case SequenceMatcherFindBounds.Enclosed:
+                case SequenceMatcherRelativeBounds.Enclosed:
                     startIndex = this.StartIndex();
                     endIndex = this.EndIndex();
                     break;
-                case SequenceMatcherFindBounds.AfterOrEnclosed:
+                case SequenceMatcherRelativeBounds.AfterOrEnclosed:
                     startIndex = this.StartIndex();
                     endIndex = this.AllElements().Count;
                     break;
-                case SequenceMatcherFindBounds.After:
+                case SequenceMatcherRelativeBounds.After:
                     startIndex = this.EndIndex();
                     endIndex = this.AllElements().Count;
                     break;
-                case SequenceMatcherFindBounds.WholeSequence:
+                case SequenceMatcherRelativeBounds.WholeSequence:
                     startIndex = 0;
                     endIndex = this.AllElements().Count;
                     break;
                 default:
-                    throw new ArgumentException($"{nameof(SequenceMatcherFindBounds)} has an invalid value.");
+                    throw new ArgumentException($"{nameof(SequenceMatcherRelativeBounds)} has an invalid value.");
             }
 
             switch (occurence)
@@ -213,8 +189,8 @@ namespace Nanoray.Shrike
             };
             var findBounds = direction switch
             {
-                SequenceMatcherPastBoundsDirection.Before => SequenceMatcherFindBounds.Before,
-                SequenceMatcherPastBoundsDirection.After => SequenceMatcherFindBounds.After,
+                SequenceMatcherPastBoundsDirection.Before => SequenceMatcherRelativeBounds.Before,
+                SequenceMatcherPastBoundsDirection.After => SequenceMatcherRelativeBounds.After,
                 _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
             };
 
@@ -255,54 +231,6 @@ namespace Nanoray.Shrike
         /// <param name="self">The current matcher.</param>
         public static IEnumerable<TElement> Elements<TElement>(this ISequenceBlockMatcher<TElement> self)
             => self.Elements();
-
-        /// <summary>
-        /// Creates a pointer matcher pointing at the element just before the first element this block matcher is pointing at.
-        /// </summary>
-        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
-        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
-        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
-        /// <param name="self">The current matcher.</param>
-        public static TPointerMatcher PointerMatcherBeforeFirst<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
-            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            => self.PointerMatcherBeforeFirst();
-
-        /// <summary>
-        /// Creates a pointer matcher pointing at the first element this block matcher is pointing at.
-        /// </summary>
-        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
-        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
-        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
-        /// <param name="self">The current matcher.</param>
-        public static TPointerMatcher PointerMatcherAtFirst<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
-            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            => self.PointerMatcherAtFirst();
-
-        /// <summary>
-        /// Creates a pointer matcher pointing at the last element this block matcher is pointing at.
-        /// </summary>
-        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
-        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
-        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
-        /// <param name="self">The current matcher.</param>
-        public static TPointerMatcher PointerMatcherAtLast<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
-            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            => self.PointerMatcherAtLast();
-
-        /// <summary>
-        /// Creates a pointer matcher pointing at the element just after the last element this block matcher is pointing at.
-        /// </summary>
-        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
-        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
-        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
-        /// <param name="self">The current matcher.</param>
-        public static TPointerMatcher PointerMatcherAfterLast<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
-            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            => self.PointerMatcherAfterLast();
 
         /// <summary>
         /// Creates a block matcher pointing at the elements just before the first element this block matcher is pointing at.
@@ -362,7 +290,7 @@ namespace Nanoray.Shrike
         /// <param name="bounds">The bounds in which to do the search.</param>
         /// <param name="toFind">The sequence of criteria to find.</param>
         /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
-        public static TBlockMatcher Find<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceBlockMatcherFindOccurence occurence, SequenceMatcherFindBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
+        public static TBlockMatcher Find<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             => self.Find(occurence, bounds, toFind);
@@ -449,7 +377,7 @@ namespace Nanoray.Shrike
         /// <param name="bounds">The bounds in which to do the search.</param>
         /// <param name="toFind">The sequence of criteria to find.</param>
         /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
-        public static TBlockMatcher Find<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceBlockMatcherFindOccurence occurence, SequenceMatcherFindBounds bounds, params IElementMatch<TElement>[] toFind)
+        public static TBlockMatcher Find<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, params IElementMatch<TElement>[] toFind)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             => self.Find(occurence, bounds, toFind);

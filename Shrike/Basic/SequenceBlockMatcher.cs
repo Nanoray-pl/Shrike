@@ -116,6 +116,14 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
+        public override SequencePointerMatcher<TElement> PointerMatcher(SequenceMatcherRelativeElement element)
+            => ElementMatcherSubclassDefaultImplementations.PointerMatcher(this, element);
+
+        /// <inheritdoc/>
+        public override SequenceBlockMatcher<TElement> BlockMatcher(SequenceMatcherRelativeBounds bounds)
+            => ElementMatcherSubclassDefaultImplementations.BlockMatcher(this, bounds);
+
+        /// <inheritdoc/>
         public SequenceBlockMatcher<TElement> Do(Func<SequenceBlockMatcher<TElement>, SequenceBlockMatcher<TElement>> closure)
         {
 #if NET7_0_OR_GREATER

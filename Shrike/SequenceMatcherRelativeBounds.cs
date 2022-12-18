@@ -1,9 +1,9 @@
 namespace Nanoray.Shrike
 {
     /// <summary>
-    /// Represents a set of bounds that could be searched against by a sequence matcher.
+    /// Represents a set of bounds relative to a sequence matcher's bounds.
     /// </summary>
-    public enum SequenceMatcherFindBounds
+    public enum SequenceMatcherRelativeBounds
     {
         /// <summary>
         /// The elements before the elements currently pointed at.
@@ -33,6 +33,6 @@ namespace Nanoray.Shrike
         /// <summary>
         /// All the underlying elements.
         /// </summary>
-        WholeSequence
+        WholeSequence,
     }
 }

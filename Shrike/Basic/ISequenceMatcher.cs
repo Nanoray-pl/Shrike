@@ -26,10 +26,16 @@ namespace Nanoray.Shrike
         where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
     {
         /// <summary>
-        /// Creates a block matcher encompassing all underlying elements this sequence matcher is working with.
+        /// Creates a pointer matcher pointing at an element relative to the bounds of this sequence matcher.
         /// </summary>
-        TBlockMatcher MakeAllElementsBlockMatcher()
-            => this.MakeBlockMatcher(0, this.AllElements().Count);
+        /// <param name="element">The relative element.</param>
+        TPointerMatcher PointerMatcher(SequenceMatcherRelativeElement element);
+
+        /// <summary>
+        /// Creates a block matcher encompassing elements in bounds relative to the bounds of this sequence matcher.
+        /// </summary>
+        /// <param name="bounds">The relative bounds.</param>
+        TBlockMatcher BlockMatcher(SequenceMatcherRelativeBounds bounds);
 
         /// <summary>
         /// Performs a replace operation on the elements matched by this sequence matcher.
@@ -137,18 +143,6 @@ namespace Nanoray.Shrike
     /// </summary>
     public static class ISequenceMatcherDefaultImplementations
     {
-        /// <summary>
-        /// Creates a block matcher encompassing all underlying elements this sequence matcher is working with.
-        /// </summary>
-        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
-        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
-        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
-        /// <param name="self">The current matcher.</param>
-        public static TBlockMatcher MakeAllElementsBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
-            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            => self.MakeAllElementsBlockMatcher();
-
         /// <summary>
         /// Creates a pointer matcher encompassing all underlying elements and pointing at a specific index.
         /// </summary>

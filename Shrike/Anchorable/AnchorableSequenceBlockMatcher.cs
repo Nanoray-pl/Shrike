@@ -73,7 +73,7 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
-        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Find(SequenceBlockMatcherFindOccurence occurence, SequenceMatcherFindBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
+        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Find(SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
         {
             Dictionary<TPointerAnchor, int> anchoredPointers = new(this.AnchoredPointers);
             var findResult = this.WrappedBlockMatcher.Find(occurence, bounds, toFind);
@@ -92,6 +92,14 @@ namespace Nanoray.Shrike
             Dictionary<TBlockAnchor, Range> anchoredBlocks = new(this.AnchoredBlocks) { [anchor] = new(new(this.StartIndex()), new(this.EndIndex())) };
             return new(this.WrappedBlockMatcher, this.AnchoredPointers, anchoredBlocks);
         }
+
+        /// <inheritdoc/>
+        public override AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> PointerMatcher(SequenceMatcherRelativeElement element)
+            => ElementMatcherSubclassDefaultImplementations.PointerMatcher(this, element);
+
+        /// <inheritdoc/>
+        public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> BlockMatcher(SequenceMatcherRelativeBounds bounds)
+            => ElementMatcherSubclassDefaultImplementations.BlockMatcher(this, bounds);
 
         /// <inheritdoc/>
         public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Remove()

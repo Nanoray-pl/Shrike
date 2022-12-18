@@ -114,5 +114,13 @@ namespace Nanoray.Shrike
                 _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
             };
         }
+
+        /// <inheritdoc/>
+        public override SequencePointerMatcher<TElement> PointerMatcher(SequenceMatcherRelativeElement element)
+            => ElementMatcherSubclassDefaultImplementations.PointerMatcher(this, element);
+
+        /// <inheritdoc/>
+        public override SequenceBlockMatcher<TElement> BlockMatcher(SequenceMatcherRelativeBounds bounds)
+            => ElementMatcherSubclassDefaultImplementations.BlockMatcher(this, bounds);
     }
 }

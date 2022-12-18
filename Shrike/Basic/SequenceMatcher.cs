@@ -42,6 +42,12 @@ namespace Nanoray.Shrike
 #endif
 
         /// <inheritdoc/>
+        public abstract SequencePointerMatcher<TElement> PointerMatcher(SequenceMatcherRelativeElement element);
+
+        /// <inheritdoc/>
+        public abstract SequenceBlockMatcher<TElement> BlockMatcher(SequenceMatcherRelativeBounds bounds);
+
+        /// <inheritdoc/>
         public abstract SequenceBlockMatcher<TElement> Replace(IEnumerable<TElement> elements);
 
         /// <inheritdoc/>

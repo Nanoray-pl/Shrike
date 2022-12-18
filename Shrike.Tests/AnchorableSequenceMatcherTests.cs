@@ -19,12 +19,12 @@ namespace Nanoray.Shrike.Tests
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "e" }, blockMatcher.AllElements());
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "e" }, blockMatcher.Elements());
 
-            var pointerMatcher = blockMatcher.PointerMatcherAtLast();
+            var pointerMatcher = blockMatcher.PointerMatcher(SequenceMatcherRelativeElement.Last);
 
             Assert.AreEqual(4, pointerMatcher.Index());
             Assert.AreEqual("e", pointerMatcher.Element());
 
-            pointerMatcher = blockMatcher.PointerMatcherAtFirst();
+            pointerMatcher = blockMatcher.PointerMatcher(SequenceMatcherRelativeElement.First);
 
             Assert.AreEqual(0, pointerMatcher.Index());
             Assert.AreEqual("a", pointerMatcher.Element());
@@ -46,11 +46,11 @@ namespace Nanoray.Shrike.Tests
             ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
 
             var pointerMatcher = blockMatcher
-                .PointerMatcherAtFirst()
+                .PointerMatcher(SequenceMatcherRelativeElement.First)
                 .Advance()
                 .AnchorPointer(out var startPlusOneAnchor)
-                .MakeAllElementsBlockMatcher()
-                .PointerMatcherAtLast()
+                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
+                .PointerMatcher(SequenceMatcherRelativeElement.Last)
                 .Advance(-1)
                 .AnchorPointer(out var endMinusOneAnchor);
 
@@ -73,15 +73,15 @@ namespace Nanoray.Shrike.Tests
             ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
 
             blockMatcher = blockMatcher
-                .PointerMatcherAtFirst()
+                .PointerMatcher(SequenceMatcherRelativeElement.First)
                 .Advance()
                 .AnchorPointer(out var oneAnchor)
                 .Advance()
                 .AnchorPointer(out var twoAnchor)
                 .Advance()
                 .AnchorPointer(out var threeAnchor)
-                .MakeAllElementsBlockMatcher()
-                .PointerMatcherAtFirst()
+                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
+                .PointerMatcher(SequenceMatcherRelativeElement.First)
                 .Advance(2)
                 .Remove();
 
@@ -109,11 +109,11 @@ namespace Nanoray.Shrike.Tests
                 .BlockMatcherBeforeFirst()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 2)
                 .AnchorBlock(out var startAnchor)
-                .MakeAllElementsBlockMatcher()
+                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
                 .BlockMatcherAfterLast()
                 .Encompass(SequenceMatcherPastBoundsDirection.Before, 2)
                 .AnchorBlock(out var endAnchor)
-                .MakeAllElementsBlockMatcher();
+                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence);
 
             var testedMatcher = blockMatcher.MoveToBlockAnchor(startAnchor);
 
@@ -143,20 +143,20 @@ namespace Nanoray.Shrike.Tests
                 .BlockMatcherBeforeFirst()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 2)
                 .AnchorBlock(out var startAnchor)
-                .MakeAllElementsBlockMatcher()
-                .PointerMatcherAtFirst()
+                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
+                .PointerMatcher(SequenceMatcherRelativeElement.First)
                 .Advance(3)
                 .BlockMatcher()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 1)
                 .AnchorBlock(out var middleAnchor)
-                .MakeAllElementsBlockMatcher()
+                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
                 .BlockMatcherAfterLast()
                 .Encompass(SequenceMatcherPastBoundsDirection.Before, 2)
                 .AnchorBlock(out var endAnchor)
-                .MakeAllElementsBlockMatcher()
+                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
                 .MoveToBlockAnchor(middleAnchor)
                 .Remove()
-                .MakeAllElementsBlockMatcher();
+                .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence);
 
             var testedMatcher = blockMatcher.MoveToBlockAnchor(startAnchor);
 

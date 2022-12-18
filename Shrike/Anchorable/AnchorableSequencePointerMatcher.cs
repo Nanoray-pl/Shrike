@@ -72,6 +72,14 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
+        public override AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> PointerMatcher(SequenceMatcherRelativeElement element)
+            => ElementMatcherSubclassDefaultImplementations.PointerMatcher(this, element);
+
+        /// <inheritdoc/>
+        public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> BlockMatcher(SequenceMatcherRelativeBounds bounds)
+            => ElementMatcherSubclassDefaultImplementations.BlockMatcher(this, bounds);
+
+        /// <inheritdoc/>
         public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Remove()
         {
             var wrapped = this.WrappedPointerMatcher.Remove();
