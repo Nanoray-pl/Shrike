@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Nanoray.Shrike
 {
@@ -36,6 +37,19 @@ namespace Nanoray.Shrike
         /// </summary>
         /// <param name="bounds">The relative bounds.</param>
         TBlockMatcher BlockMatcher(SequenceMatcherRelativeBounds bounds);
+
+        /// <summary>
+        /// Creates a block matcher pointing at the same elements this sequence matcher points at, or the same matcher if it is a block matcher already.
+        /// </summary>
+        TBlockMatcher BlockMatcher()
+        {
+            if (this is TBlockMatcher blockMatcher)
+                return blockMatcher;
+            else if (this is TPointerMatcher pointerMatcher)
+                return pointerMatcher.MakeBlockMatcher(pointerMatcher.Index(), 1);
+            else
+                throw new InvalidOperationException("Expected a pointer or block matcher.");
+        }
 
         /// <summary>
         /// Performs a replace operation on the elements matched by this sequence matcher.
@@ -138,6 +152,130 @@ namespace Nanoray.Shrike
 #endif
 
         /// <summary>
+        /// Finds the first sequence of elements matching the given criteria.
+        /// </summary>
+        /// <remarks>
+        /// The search will be performed:
+        /// <list type="bullet">
+        /// <item>On all elements, if this matcher points at all underlying elements, or</item>
+        /// <item>On elements after the elements this matcher points at.</item>
+        /// </list>
+        /// </remarks>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
+        TBlockMatcher Find(IReadOnlyList<IElementMatch<TElement>> toFind)
+        {
+            var blockMatcher = this.BlockMatcher();
+            return this.Find(
+                SequenceBlockMatcherFindOccurence.First,
+                blockMatcher.StartIndex() == 0 && blockMatcher.Length() == this.AllElements().Count ? SequenceMatcherRelativeBounds.Enclosed : SequenceMatcherRelativeBounds.After,
+                toFind
+            );
+        }
+
+        /// <summary>
+        /// Finds a sequence of elements matching the given criteria.
+        /// </summary>
+        /// <param name="occurence">Whether to find the first or last occurence of the match.</param>
+        /// <param name="bounds">The bounds in which to do the search.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
+        TBlockMatcher Find(SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
+        {
+            var findBoundsMatcher = this.BlockMatcher(bounds);
+            int startIndex = findBoundsMatcher.StartIndex();
+            int endIndex = findBoundsMatcher.EndIndex();
+            switch (occurence)
+            {
+                case SequenceBlockMatcherFindOccurence.First:
+                    {
+                        int maxIndex = endIndex - toFind.Count;
+                        for (int index = startIndex; index < maxIndex; index++)
+                        {
+                            for (int toFindIndex = 0; toFindIndex < toFind.Count; toFindIndex++)
+                            {
+                                if (!toFind[toFindIndex].Matches(this.AllElements()[index + toFindIndex]))
+                                    goto continueOuter;
+                            }
+                            return this.MakeBlockMatcher(index, toFind.Count);
+                        continueOuter:;
+                        }
+                        break;
+                    }
+                case SequenceBlockMatcherFindOccurence.Last:
+                    {
+                        int minIndex = startIndex + toFind.Count - 1;
+                        for (int index = endIndex - 1; index >= minIndex; index--)
+                        {
+                            for (int toFindIndex = toFind.Count - 1; toFindIndex >= 0; toFindIndex--)
+                            {
+                                if (!toFind[toFindIndex].Matches(this.AllElements()[index + toFindIndex - toFind.Count + 1]))
+                                    goto continueOuter;
+                            }
+                            return this.MakeBlockMatcher(index - toFind.Count + 1, toFind.Count);
+                        continueOuter:;
+                        }
+                        break;
+                    }
+                default:
+                    throw new ArgumentException($"{nameof(SequenceBlockMatcherFindOccurence)} has an invalid value.");
+            }
+            throw new SequenceMatcherException($"Pattern not found:\n{string.Join("\n", toFind.Select(i => $"\t{i.Description}"))}");
+        }
+
+        /// <summary>
+        /// Encompasses the next/previous elements.
+        /// </summary>
+        /// <param name="direction">The direction to encompass elements at.</param>
+        /// <param name="length">The number of next/previous elements to encompass.</param>
+        /// <returns>A new block matcher pointing at the same elements this sequence matcher points at, and additionally the given number of next/previous elements.</returns>
+        TBlockMatcher Encompass(SequenceMatcherPastBoundsDirection direction, int length)
+        {
+            if (length < 0)
+                throw new IndexOutOfRangeException($"Invalid value {length} for parameter `{nameof(length)}`.");
+            var blockMatcher = this.BlockMatcher();
+            if (length == 0)
+                return blockMatcher;
+            return direction switch
+            {
+                SequenceMatcherPastBoundsDirection.Before => this.MakeBlockMatcher(blockMatcher.StartIndex() - length, blockMatcher.Length() + length),
+                SequenceMatcherPastBoundsDirection.After => this.MakeBlockMatcher(blockMatcher.StartIndex(), blockMatcher.Length() + length),
+                _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
+            };
+        }
+
+        /// <summary>
+        /// Encompasses elements until a sequence of elements matching the given criteria.
+        /// </summary>
+        /// <param name="direction">The direction to encompass elements at.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the same elements this sequence matcher points at, and additionally elements up until (including) a sequence of elements matching the given criteria.</returns>
+        TBlockMatcher EncompassUntil(SequenceMatcherPastBoundsDirection direction, IReadOnlyList<IElementMatch<TElement>> toFind)
+        {
+            var blockMatcher = this.BlockMatcher();
+            var findOccurence = direction switch
+            {
+                SequenceMatcherPastBoundsDirection.Before => SequenceBlockMatcherFindOccurence.Last,
+                SequenceMatcherPastBoundsDirection.After => SequenceBlockMatcherFindOccurence.First,
+                _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
+            };
+            var findBounds = direction switch
+            {
+                SequenceMatcherPastBoundsDirection.Before => SequenceMatcherRelativeBounds.Before,
+                SequenceMatcherPastBoundsDirection.After => SequenceMatcherRelativeBounds.After,
+                _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
+            };
+
+            var findMatcher = this.Find(findOccurence, findBounds, toFind);
+            return direction switch
+            {
+                SequenceMatcherPastBoundsDirection.Before => this.MakeBlockMatcher(findMatcher.StartIndex(), blockMatcher.EndIndex() - findMatcher.StartIndex()),
+                SequenceMatcherPastBoundsDirection.After => this.MakeBlockMatcher(blockMatcher.StartIndex(), findMatcher.EndIndex() - blockMatcher.StartIndex()),
+                _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
+            };
+        }
+
+        /// <summary>
         /// Performs a provided set of operations on each set of elements matching the given criteria.
         /// </summary>
         /// <param name="bounds">The bounds in which to do the search.</param>
@@ -186,6 +324,18 @@ namespace Nanoray.Shrike
     /// </summary>
     public static class ISequenceMatcherDefaultImplementations
     {
+        /// <summary>
+        /// Creates a block matcher pointing at the same elements this sequence matcher points at, or the same matcher if it is a block matcher already.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        public static TBlockMatcher BlockMatcher<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.BlockMatcher();
+
         /// <summary>
         /// Creates a pointer matcher encompassing all underlying elements and pointing at a specific index.
         /// </summary>
@@ -243,6 +393,73 @@ namespace Nanoray.Shrike
 #endif
 
         /// <summary>
+        /// Finds a sequence of elements matching the given criteria.
+        /// </summary>
+        /// <remarks>
+        /// The search will be performed:
+        /// <list type="bullet">
+        /// <item>On all elements, if this matcher points at all underlying elements, or</item>
+        /// <item>On elements after the elements this matcher points at.</item>
+        /// </list>
+        /// </remarks>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
+        public static TBlockMatcher Find<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, IReadOnlyList<IElementMatch<TElement>> toFind)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.Find(toFind);
+
+        /// <summary>
+        /// Finds a sequence of elements matching the given criteria.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="occurence">Whether to find the first or last occurence of the match.</param>
+        /// <param name="bounds">The bounds in which to do the search.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
+        public static TBlockMatcher Find<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.Find(occurence, bounds, toFind);
+
+        /// <summary>
+        /// Encompasses the next/previous elements.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="direction">The direction to encompass elements at.</param>
+        /// <param name="length">The number of next/previous elements to encompass.</param>
+        /// <returns>A new block matcher pointing at the same elements this sequence matcher points at, and additionally the given number of next/previous elements.</returns>
+        public static TBlockMatcher Encompass<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherPastBoundsDirection direction, int length)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.Encompass(direction, length);
+
+        /// <summary>
+        /// Encompasses elements until a sequence of elements matching the given criteria.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="direction">The direction to encompass elements at.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the same elements this sequence matcher points at, and additionally elements up until (including) a sequence of elements matching the given criteria.</returns>
+        public static TBlockMatcher EncompassUntil<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherPastBoundsDirection direction, IReadOnlyList<IElementMatch<TElement>> toFind)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.EncompassUntil(direction, toFind);
+
+        /// <summary>
         /// Performs a provided set of operations on each set of elements matching the given criteria.
         /// </summary>
         /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
@@ -295,5 +512,57 @@ namespace Nanoray.Shrike
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             => self.Insert(position, includeInsertionInResultingBounds, elements);
+
+        /// <summary>
+        /// Finds a sequence of elements matching the given criteria.
+        /// </summary>
+        /// <remarks>
+        /// The search will be performed:
+        /// <list type="bullet">
+        /// <item>On all elements, if this matcher points at all underlying elements, or</item>
+        /// <item>On elements after the elements this matcher points at.</item>
+        /// </list>
+        /// </remarks>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
+        public static TBlockMatcher Find<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, params IElementMatch<TElement>[] toFind)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.Find(toFind);
+
+        /// <summary>
+        /// Finds a sequence of elements matching the given criteria.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="occurence">Whether to find the first or last occurence of the match.</param>
+        /// <param name="bounds">The bounds in which to do the search.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
+        public static TBlockMatcher Find<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, params IElementMatch<TElement>[] toFind)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.Find(occurence, bounds, toFind);
+
+        /// <summary>
+        /// Encompasses elements until a sequence of elements matching the given criteria.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="direction">The direction to encompass elements at.</param>
+        /// <param name="toFind">The sequence of criteria to find.</param>
+        /// <returns>A new block matcher pointing at the same elements this sequence matcher points at, and additionally elements up until (including) a sequence of elements matching the given criteria.</returns>
+        public static TBlockMatcher EncompassUntil<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherPastBoundsDirection direction, params IElementMatch<TElement>[] toFind)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.EncompassUntil(direction, toFind);
     }
 }

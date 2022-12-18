@@ -143,7 +143,6 @@ namespace Nanoray.Shrike.Tests
                 .AnchorBlock(out var startAnchor)
                 .PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence)
                 .Advance(3)
-                .BlockMatcher()
                 .Encompass(SequenceMatcherPastBoundsDirection.After, 1)
                 .AnchorBlock(out var middleAnchor)
                 .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)

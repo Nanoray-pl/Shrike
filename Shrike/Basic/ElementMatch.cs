@@ -24,6 +24,13 @@ namespace Nanoray.Shrike
             this.Closure = closure;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ElementMatch{TElement}"/> class, matching a specific element.
+        /// </summary>
+        /// <param name="element">The element that satisfies this match.</param>
+        /// <remarks>The element's <see cref="object.Equals(object?)"/> method will be used for matching.</remarks>
+        public ElementMatch(TElement element) : this($"{element}", e => Equals(e, element)) { }
+
         /// <inheritdoc/>
         public bool Matches(TElement element)
             => this.Closure(element);
