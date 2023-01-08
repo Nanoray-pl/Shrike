@@ -141,11 +141,11 @@ namespace Nanoray.Shrike
         /// <param name="times">The number of times this set of operations should be performed.</param>
         /// <param name="closure">The set of operations to perform.</param>
         /// <returns>A new block matcher representing the state after performing the provided set of operations on the elements matched by this block matcher.</returns>
-        public static TBlockMatcher Repeat<TElement, TPointerMatcher, TBlockMatcher>(this TBlockMatcher self, int times, Func<TBlockMatcher, TBlockMatcher> closure)
+        public static TBlockMatcher Repeat<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self, int times, Func<TBlockMatcher, TBlockMatcher> closure)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
         {
-            var matcher = self;
+            TBlockMatcher matcher = self.BlockMatcher();
             for (int i = 0; i < times; i++)
                 matcher = closure(matcher);
             return matcher;
