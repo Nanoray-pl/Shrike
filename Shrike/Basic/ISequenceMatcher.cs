@@ -190,7 +190,7 @@ namespace Nanoray.Shrike
                 case SequenceBlockMatcherFindOccurence.First:
                     {
                         int maxIndex = endIndex - toFind.Count;
-                        for (int index = startIndex; index < maxIndex; index++)
+                        for (int index = startIndex; index <= maxIndex; index++)
                         {
                             for (int toFindIndex = 0; toFindIndex < toFind.Count; toFindIndex++)
                             {
