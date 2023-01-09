@@ -8,6 +8,12 @@ namespace Nanoray.Shrike
     /// <typeparam name="TElement">The type of elements this object can match.</typeparam>
     public record ElementMatch<TElement> : IElementMatch<TElement>
     {
+        /// <summary>
+        /// An element match matching any element.
+        /// </summary>
+        public static ElementMatch<TElement> True
+            => new("<anything>", _ => true);
+
         /// <inheritdoc/>
         public string Description { get; init; }
 
