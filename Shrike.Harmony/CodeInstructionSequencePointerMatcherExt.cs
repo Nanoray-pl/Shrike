@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -27,6 +28,60 @@ namespace Nanoray.Shrike.Harmony
             var result = self.AllElements().ToList();
             result[self.Index()] = new(result[self.Index()]);
             result[self.Index()].labels.Add(label);
+
+#if NET7_0_OR_GREATER
+            return TPointerMatcher.MakeNewPointerMatcher(result, self.Index());
+#else
+            return self.MakeNewPointerMatcher(result, self.Index());
+#endif
+        }
+
+        /// <summary>
+        /// Add labels to the current instruction.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="labels">The labels to add.</param>
+        /// <returns>A new pointer matcher, with a modified instruction including the given labels.</returns>
+        public static TPointerMatcher AddLabels<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, IEnumerable<Label> labels)
+            where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
+        {
+            if (self.Index() >= self.AllElements().Count)
+                throw new SequenceMatcherException("No instruction to add labels to (the pointer is past all instructions).");
+
+            var result = self.AllElements().ToList();
+            result[self.Index()] = new(result[self.Index()]);
+            result[self.Index()].labels.AddRange(labels);
+
+#if NET7_0_OR_GREATER
+            return TPointerMatcher.MakeNewPointerMatcher(result, self.Index());
+#else
+            return self.MakeNewPointerMatcher(result, self.Index());
+#endif
+        }
+
+        /// <summary>
+        /// Extracts labels from the current instructions, removing them from it.
+        /// </summary>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="labels">The extracted labels.</param>
+        /// <returns>A new pointer matcher, with a modified instruction without its labels.</returns>
+        public static TPointerMatcher ExtractLabels<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out IReadOnlySet<Label> labels)
+            where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
+        {
+            if (self.Index() >= self.AllElements().Count)
+                throw new SequenceMatcherException("No instruction to extract labels from (the pointer is past all instructions).");
+
+            labels = self.Element().labels.ToHashSet();
+
+            var result = self.AllElements().ToList();
+            result[self.Index()] = new(result[self.Index()]);
+            result[self.Index()].labels.Clear();
 
 #if NET7_0_OR_GREATER
             return TPointerMatcher.MakeNewPointerMatcher(result, self.Index());
