@@ -61,4 +61,5 @@ IEnumerable<string> newElements = new SequenceBlockMatcher<string>(
 ```
 
 ## See also
-* [Release notes](release-notes.md)
+* [Release notes for Shrike](release-notes.md)
+* [Release notes for Shrike.Harmony](release-notes-harmony.md)
