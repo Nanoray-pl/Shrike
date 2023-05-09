@@ -16,13 +16,14 @@ namespace Nanoray.Shrike.Harmony
         /// <param name="self">The current matcher.</param>
         /// <param name="label">The label to move to.</param>
         /// <returns>A new pointer matcher, pointing at instruction with the given label.</returns>
-        public static TPointerMatcher MoveToLabel<TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, Label label)
+        public static TPointerMatcher PointerMatcher<TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, Label label)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
-            for (int i = 0; i < self.AllElements().Count; i++)
+            var instructions = self.AllElements();
+            for (int i = 0; i < instructions.Count; i++)
             {
-                if (self.AllElements()[i].labels.Contains(label))
+                if (instructions[i].labels.Contains(label))
                     return self.MakePointerMatcher(i);
             }
             throw new SequenceMatcherException($"Label {label} not found.");
