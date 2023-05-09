@@ -28,8 +28,8 @@ namespace Nanoray.Shrike
         /// <summary>
         /// The elements this block matcher is pointing at.
         /// </summary>
-        IEnumerable<TElement> Elements()
-            => this.AllElements().Skip(this.StartIndex()).Take(this.Length());
+        IReadOnlyList<TElement> Elements()
+            => this.AllElements().Skip(this.StartIndex()).Take(this.Length()).ToList();
     }
 
     /// <summary>
@@ -42,6 +42,17 @@ namespace Nanoray.Shrike
         where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
         where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
     {
+        /// <summary>
+        /// Stores the elements this block matcher is pointing at.
+        /// </summary>
+        /// <param name="elements">The currently pointed at elements.</param>
+        /// <returns>An unchanged block matcher.</returns>
+        TBlockMatcher Elements(out IReadOnlyList<TElement> elements)
+        {
+            elements = this.Elements();
+            return this.MakeBlockMatcher(this.StartIndex(), this.Length());
+        }
+
         /// <summary>
         /// Creates a block matcher pointing at the elements just before the first element this block matcher is pointing at.
         /// </summary>
@@ -82,8 +93,22 @@ namespace Nanoray.Shrike
         /// </summary>
         /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
         /// <param name="self">The current matcher.</param>
-        public static IEnumerable<TElement> Elements<TElement>(this ISequenceBlockMatcher<TElement> self)
+        public static IReadOnlyList<TElement> Elements<TElement>(this ISequenceBlockMatcher<TElement> self)
             => self.Elements();
+
+        /// <summary>
+        /// Stores the elements this block matcher is pointing at.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="elements">The currently pointed at elements.</param>
+        /// <returns>An unchanged block matcher.</returns>
+        public static TBlockMatcher Elements<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher> self, out IReadOnlyList<TElement> elements)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.Elements(out elements);
 
         /// <summary>
         /// Creates a block matcher pointing at the elements just before the first element this block matcher is pointing at.

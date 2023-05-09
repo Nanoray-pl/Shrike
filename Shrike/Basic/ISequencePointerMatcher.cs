@@ -31,6 +31,17 @@ namespace Nanoray.Shrike
         where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
     {
         /// <summary>
+        /// Stores the element this pointer matcher is pointing at.
+        /// </summary>
+        /// <param name="element">The currently pointed at element.</param>
+        /// <returns>An unchanged pointer matcher.</returns>
+        TPointerMatcher Element(out TElement element)
+        {
+            element = this.Element();
+            return this.MakePointerMatcher(this.Index());
+        }
+
+        /// <summary>
         /// Creates a pointer matcher pointing at another element offset from the current one.
         /// </summary>
         /// <param name="offset">The index offset from the current index.</param>
@@ -72,6 +83,20 @@ namespace Nanoray.Shrike
         /// <param name="self">The current matcher.</param>
         public static TElement Element<TElement>(this ISequencePointerMatcher<TElement> self)
             => self.Element();
+
+        /// <summary>
+        /// Stores the element this pointer matcher is pointing at.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
+        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <param name="self">The current matcher.</param>
+        /// <param name="element">The currently pointed at element.</param>
+        /// <returns>An unchanged pointer matcher.</returns>
+        public static TPointerMatcher Element<TElement, TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher> self, out TElement element)
+            where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
+            => self.Element(out element);
 
         /// <summary>
         /// Creates a pointer matcher pointing at another element offset from the current one.
