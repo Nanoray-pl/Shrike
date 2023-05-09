@@ -52,7 +52,7 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
-        public override SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
+        public override SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, SequenceMatcherInsertionResultingBounds resultingBounds, IEnumerable<TElement> elements)
         {
             List<TElement> result = new();
             switch (position)
@@ -63,10 +63,12 @@ namespace Nanoray.Shrike
                         result.AddRange(elements);
                         result.AddRange(this.AllElements().Skip(this.Index()));
                         int lengthDifference = result.Count - this.AllElements().Count;
-                        return includeInsertionInResultingBounds switch
+                        return resultingBounds switch
                         {
-                            false => new(result, this.Index() + lengthDifference, 1),
-                            true => new(result, this.Index(), lengthDifference + 1),
+                            SequenceMatcherInsertionResultingBounds.ExcludingInsertion => new(result, this.Index() + lengthDifference, 1),
+                            SequenceMatcherInsertionResultingBounds.JustInsertion => new(result, this.Index(), lengthDifference),
+                            SequenceMatcherInsertionResultingBounds.IncludingInsertion => new(result, this.Index(), lengthDifference + 1),
+                            _ => throw new ArgumentException($"{nameof(SequenceMatcherInsertionResultingBounds)} has an invalid value.")
                         };
                     }
                 case SequenceMatcherPastBoundsDirection.After:
@@ -75,10 +77,12 @@ namespace Nanoray.Shrike
                         result.AddRange(elements);
                         result.AddRange(this.AllElements().Skip(this.Index() + 1));
                         int lengthDifference = result.Count - this.AllElements().Count;
-                        return includeInsertionInResultingBounds switch
+                        return resultingBounds switch
                         {
-                            false => new(result, this.Index(), 1),
-                            true => new(result, this.Index(), lengthDifference + 1),
+                            SequenceMatcherInsertionResultingBounds.ExcludingInsertion => new(result, this.Index(), 1),
+                            SequenceMatcherInsertionResultingBounds.JustInsertion => new(result, this.Index() + 1, lengthDifference),
+                            SequenceMatcherInsertionResultingBounds.IncludingInsertion => new(result, this.Index(), lengthDifference + 1),
+                            _ => throw new ArgumentException($"{nameof(SequenceMatcherInsertionResultingBounds)} has an invalid value.")
                         };
                     }
                 default:

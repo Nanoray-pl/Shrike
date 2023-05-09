@@ -116,9 +116,9 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
-        public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements)
+        public override AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> Insert(SequenceMatcherPastBoundsDirection position, SequenceMatcherInsertionResultingBounds resultingBounds, IEnumerable<TElement> elements)
         {
-            var wrapped = this.WrappedBlockMatcher.Insert(position, includeInsertionInResultingBounds, elements);
+            var wrapped = this.WrappedBlockMatcher.Insert(position, resultingBounds, elements);
             return new(wrapped, this.GetModifiedAnchoredPointers(wrapped.AllElements()), this.GetModifiedAnchoredBlocks(wrapped.AllElements()));
         }
 

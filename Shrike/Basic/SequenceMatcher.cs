@@ -54,6 +54,6 @@ namespace Nanoray.Shrike
         public abstract SequenceBlockMatcher<TElement> Remove();
 
         /// <inheritdoc/>
-        public abstract SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements);
+        public abstract SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, SequenceMatcherInsertionResultingBounds resultingBounds, IEnumerable<TElement> elements);
     }
 }

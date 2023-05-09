@@ -141,13 +141,30 @@ namespace Nanoray.Shrike.Tests
             );
 
             blockMatcher = blockMatcher
-                .Insert(SequenceMatcherPastBoundsDirection.Before, includeInsertionInResultingBounds: true, "1", "2", "3");
+                .Insert(SequenceMatcherPastBoundsDirection.Before, SequenceMatcherInsertionResultingBounds.IncludingInsertion, "1", "2", "3");
 
             Assert.AreEqual(0, blockMatcher.StartIndex());
             Assert.AreEqual(6, blockMatcher.EndIndex());
             Assert.AreEqual(6, blockMatcher.Length());
             CollectionAssert.AreEqual(new string[] { "1", "2", "3", "a", "b", "c" }, blockMatcher.AllElements());
             CollectionAssert.AreEqual(new string[] { "1", "2", "3", "a", "b", "c" }, blockMatcher.Elements());
+        }
+
+        [Test]
+        public void TestInsertBeforeWithJustInsertionInResultingBounds()
+        {
+            var blockMatcher = new SequenceBlockMatcher<string>(
+                "a", "b", "c"
+            );
+
+            blockMatcher = blockMatcher
+                .Insert(SequenceMatcherPastBoundsDirection.Before, SequenceMatcherInsertionResultingBounds.JustInsertion, "1", "2", "3");
+
+            Assert.AreEqual(0, blockMatcher.StartIndex());
+            Assert.AreEqual(3, blockMatcher.EndIndex());
+            Assert.AreEqual(3, blockMatcher.Length());
+            CollectionAssert.AreEqual(new string[] { "1", "2", "3", "a", "b", "c" }, blockMatcher.AllElements());
+            CollectionAssert.AreEqual(new string[] { "1", "2", "3" }, blockMatcher.Elements());
         }
 
         [Test]
@@ -158,7 +175,7 @@ namespace Nanoray.Shrike.Tests
             );
 
             blockMatcher = blockMatcher
-                .Insert(SequenceMatcherPastBoundsDirection.Before, includeInsertionInResultingBounds: false, "1", "2", "3");
+                .Insert(SequenceMatcherPastBoundsDirection.Before, SequenceMatcherInsertionResultingBounds.ExcludingInsertion, "1", "2", "3");
 
             Assert.AreEqual(3, blockMatcher.StartIndex());
             Assert.AreEqual(6, blockMatcher.EndIndex());
@@ -175,13 +192,30 @@ namespace Nanoray.Shrike.Tests
             );
 
             blockMatcher = blockMatcher
-                .Insert(SequenceMatcherPastBoundsDirection.After, includeInsertionInResultingBounds: true, "1", "2", "3");
+                .Insert(SequenceMatcherPastBoundsDirection.After, SequenceMatcherInsertionResultingBounds.IncludingInsertion, "1", "2", "3");
 
             Assert.AreEqual(0, blockMatcher.StartIndex());
             Assert.AreEqual(6, blockMatcher.EndIndex());
             Assert.AreEqual(6, blockMatcher.Length());
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "1", "2", "3" }, blockMatcher.AllElements());
             CollectionAssert.AreEqual(new string[] { "a", "b", "c", "1", "2", "3" }, blockMatcher.Elements());
+        }
+
+        [Test]
+        public void TestBlockInsertAfterWithJustInsertionInResultingBounds()
+        {
+            var blockMatcher = new SequenceBlockMatcher<string>(
+                "a", "b", "c"
+            );
+
+            blockMatcher = blockMatcher
+                .Insert(SequenceMatcherPastBoundsDirection.After, SequenceMatcherInsertionResultingBounds.JustInsertion, "1", "2", "3");
+
+            Assert.AreEqual(3, blockMatcher.StartIndex());
+            Assert.AreEqual(6, blockMatcher.EndIndex());
+            Assert.AreEqual(3, blockMatcher.Length());
+            CollectionAssert.AreEqual(new string[] { "a", "b", "c", "1", "2", "3" }, blockMatcher.AllElements());
+            CollectionAssert.AreEqual(new string[] { "1", "2", "3" }, blockMatcher.Elements());
         }
 
         [Test]
@@ -192,7 +226,7 @@ namespace Nanoray.Shrike.Tests
             );
 
             blockMatcher = blockMatcher
-                .Insert(SequenceMatcherPastBoundsDirection.After, includeInsertionInResultingBounds: false, "1", "2", "3");
+                .Insert(SequenceMatcherPastBoundsDirection.After, SequenceMatcherInsertionResultingBounds.ExcludingInsertion, "1", "2", "3");
 
             Assert.AreEqual(0, blockMatcher.StartIndex());
             Assert.AreEqual(3, blockMatcher.EndIndex());

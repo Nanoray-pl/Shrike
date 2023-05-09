@@ -68,10 +68,10 @@ namespace Nanoray.Shrike
         /// Performs an insert operation before/after the elements matched by this sequence matcher.
         /// </summary>
         /// <param name="position">The position the new elements should be inserted at.</param>
-        /// <param name="includeInsertionInResultingBounds">Whether the resulting block matcher should also include the newly inserted elements in the range it points at.</param>
+        /// <param name="resultingBounds">The resulting bounds after insertion.</param>
         /// <param name="elements">The new elements to insert.</param>
-        /// <returns>A new block matcher representing the state after inserting the new elements, pointing at the currently matched elements.</returns>
-        TBlockMatcher Insert(SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, IEnumerable<TElement> elements);
+        /// <returns>A new block matcher representing the state after inserting the new element.</returns>
+        TBlockMatcher Insert(SequenceMatcherPastBoundsDirection position, SequenceMatcherInsertionResultingBounds resultingBounds, IEnumerable<TElement> elements);
 
         /// <summary>
         /// Creates a pointer matcher encompassing all underlying elements and pointing at a specific index.
@@ -505,13 +505,13 @@ namespace Nanoray.Shrike
         /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="position">The position the new elements should be inserted at.</param>
-        /// <param name="includeInsertionInResultingBounds">Whether the resulting block matcher should also include the newly inserted elements in the range it points at.</param>
+        /// <param name="resultingBounds">The resulting bounds after insertion.</param>
         /// <param name="elements">The new elements to insert.</param>
-        /// <returns>A new block matcher representing the state after inserting the new elements, pointing at the currently matched elements.</returns>
-        public static TBlockMatcher Insert<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherPastBoundsDirection position, bool includeInsertionInResultingBounds, params TElement[] elements)
+        /// <returns>A new block matcher representing the state after inserting the new elements.</returns>
+        public static TBlockMatcher Insert<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherPastBoundsDirection position, SequenceMatcherInsertionResultingBounds resultingBounds, params TElement[] elements)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
-            => self.Insert(position, includeInsertionInResultingBounds, elements);
+            => self.Insert(position, resultingBounds, elements);
 
         /// <summary>
         /// Finds a sequence of elements matching the given criteria.
