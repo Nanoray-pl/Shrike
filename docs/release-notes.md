@@ -2,6 +2,18 @@
 
 # Release notes
 
+## 2.0.0
+Released 9 May 2023.
+
+* Changed `ISequenceMatcher.Insert` declaration: `bool includeInsertionInResultingBounds` is now `SequenceMatcherInsertionResultingBounds resultingBounds`, with values `ExcludingInsertion`/`JustInsertion`/`IncludingInsertion`.
+* Changed `ISequenceMatcher.Encompass` declaration: `SequenceMatcherPastBoundsDirection direction` is now `SequenceMatcherEncompassDirection direction`, with values `Before`/`After`/`Both`.
+* Changed `ISequenceBlockMatcher.Elements()` to return `IReadOnlyList<TElement>` instead of `IEnumerable<TElement>`.
+* Renamed `ISequenceMatcher.MoveTo(Pointer/Block)Anchor(T(Pointer/Block)Anchor anchor)` to `ISequenceMatcher.(Pointer/Block)Matcher(T(Pointer/Block)Anchor anchor)`.
+* Added `ISequencePointerMatcher.Element(out TElement element)` and `ISequenceBlockMatcher.Elements(out IReadOnlyList<TElement> elements)`.
+* Added an additional `ISequence(Pointer/Block)Matcher.AsAnchorable()` overload for same `TPointerAnchor` and `TBlockAnchor` generic type arguments.
+* Added `ISequence(Pointer/Block)Matcher.AsGuidAnchorable()`.
+* Implemented some small potential optimizations.
+
 ## 1.1.0
 Released 10 January 2023.
 
