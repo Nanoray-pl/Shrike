@@ -360,7 +360,7 @@ namespace Nanoray.Shrike.Harmony
         /// </summary>
         /// <param name="field">The field.</param>
         public static IElementMatch<CodeInstruction> Stfld(FieldInfo field)
-            => new ElementMatch<CodeInstruction>($"{{ldfld {field}}}", i => i.opcode == OpCodes.Stfld && (FieldInfo)i.operand == field);
+            => new ElementMatch<CodeInstruction>($"{{stfld {field}}}", i => i.opcode == OpCodes.Stfld && (FieldInfo)i.operand == field);
 
         /// <summary>
         /// Matches an <c>stfld</c> instruction matching the given field name.
