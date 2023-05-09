@@ -78,7 +78,7 @@ namespace Nanoray.Shrike
             => new(this.WrappedMatcher.MakeBlockMatcher(startIndex, length), this.AnchoredPointers, this.AnchoredBlocks);
 
         /// <inheritdoc/>
-        public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MoveToPointerAnchor(TPointerAnchor anchor)
+        public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> PointerMatcher(TPointerAnchor anchor)
         {
             if (this.AnchoredPointers.TryGetValue(anchor, out int anchorIndex))
                 return this.MakePointerMatcher(anchorIndex);
@@ -87,7 +87,7 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
-        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> MoveToBlockAnchor(TBlockAnchor anchor)
+        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> BlockMatcher(TBlockAnchor anchor)
         {
             if (this.AnchoredBlocks.TryGetValue(anchor, out var anchorRange))
                 return ((ISequenceMatcher<TElement, AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>>)this).MakeBlockMatcher(anchorRange);

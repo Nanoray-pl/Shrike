@@ -19,7 +19,7 @@ namespace Nanoray.Shrike
         /// </summary>
         /// <param name="anchor">The anchor to move to.</param>
         /// <returns>A new block matcher, pointing at a block anchored earlier.</returns>
-        TBlockMatcher MoveToBlockAnchor(TAnchor anchor);
+        TBlockMatcher BlockMatcher(TAnchor anchor);
     }
 
     /// <summary>
