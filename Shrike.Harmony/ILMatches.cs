@@ -342,6 +342,34 @@ namespace Nanoray.Shrike.Harmony
             => Ldloca(typeof(T), locals);
 
         /// <summary>
+        /// Matches an <c>ldsfld</c> instruction matching the given field.
+        /// </summary>
+        /// <param name="field">The field.</param>
+        public static IElementMatch<CodeInstruction> Ldsfld(FieldInfo field)
+            => new ElementMatch<CodeInstruction>($"{{ldsfld {field}}}", i => i.opcode == OpCodes.Ldsfld && (FieldInfo)i.operand == field);
+
+        /// <summary>
+        /// Matches an <c>ldsfld</c> instruction matching the given field name.
+        /// </summary>
+        /// <param name="fieldName">The field name.</param>
+        public static IElementMatch<CodeInstruction> Ldsfld(string fieldName)
+            => new ElementMatch<CodeInstruction>($"{{ldsfld named {fieldName}}}", i => i.opcode == OpCodes.Ldsfld && ((FieldInfo)i.operand).Name == fieldName);
+
+        /// <summary>
+        /// Matches an <c>stsfld</c> instruction matching the given field.
+        /// </summary>
+        /// <param name="field">The field.</param>
+        public static IElementMatch<CodeInstruction> Stsfld(FieldInfo field)
+            => new ElementMatch<CodeInstruction>($"{{stsfld {field}}}", i => i.opcode == OpCodes.Stsfld && (FieldInfo)i.operand == field);
+
+        /// <summary>
+        /// Matches an <c>stsfld</c> instruction matching the given field name.
+        /// </summary>
+        /// <param name="fieldName">The field name.</param>
+        public static IElementMatch<CodeInstruction> Stsfld(string fieldName)
+            => new ElementMatch<CodeInstruction>($"{{stsfld named {fieldName}}}", i => i.opcode == OpCodes.Stsfld && ((FieldInfo)i.operand).Name == fieldName);
+
+        /// <summary>
         /// Matches an <c>ldfld</c> instruction matching the given field.
         /// </summary>
         /// <param name="field">The field.</param>
