@@ -246,6 +246,20 @@ namespace Nanoray.Shrike.Harmony
             => new ElementMatch<CodeInstruction>($"{{ldstr `{value}`}}", i => i.opcode == OpCodes.Ldstr && (string)i.operand == value);
 
         /// <summary>
+        /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given local index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        public static IElementMatch<CodeInstruction> Ldloc(int index)
+            => new ElementMatch<CodeInstruction>($"{{ldloc(.s) {index}}}", i => AnyLdloc.Matches(i) && ExtractLocalIndex(i) == index);
+
+        /// <summary>
+        /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given instruction.
+        /// </summary>
+        /// <param name="instruction">The instruction to match against.</param>
+        public static IElementMatch<CodeInstruction> Ldloc(CodeInstruction instruction)
+            => new ElementMatch<CodeInstruction>($"{{ldloc matching {instruction}}}", i => Ldloc(i).Matches(i));
+
+        /// <summary>
         /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given type.
         /// </summary>
         /// <param name="type">The type.</param>
@@ -278,6 +292,20 @@ namespace Nanoray.Shrike.Harmony
             => Ldloc(typeof(T), locals);
 
         /// <summary>
+        /// Matches an <c>stloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given local index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        public static IElementMatch<CodeInstruction> Stloc(int index)
+            => new ElementMatch<CodeInstruction>($"{{stloc(.s) {index}}}", i => AnyStloc.Matches(i) && ExtractLocalIndex(i) == index);
+
+        /// <summary>
+        /// Matches an <c>stloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given instruction.
+        /// </summary>
+        /// <param name="instruction">The instruction to match against.</param>
+        public static IElementMatch<CodeInstruction> Stloc(CodeInstruction instruction)
+            => new ElementMatch<CodeInstruction>($"{{stloc matching {instruction}}}", i => Stloc(i).Matches(i));
+
+        /// <summary>
         /// Matches an <c>stloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given type.
         /// </summary>
         /// <param name="type">The type.</param>
@@ -308,6 +336,20 @@ namespace Nanoray.Shrike.Harmony
         /// <param name="locals">The method local variable list.</param>
         public static IElementMatch<CodeInstruction> Stloc<T>(IEnumerable<LocalVariableInfo> locals)
             => Stloc(typeof(T), locals);
+
+        /// <summary>
+        /// Matches an <c>ldloca</c>(<c>.s</c>) instruction matching the given local index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        public static IElementMatch<CodeInstruction> Ldloca(int index)
+            => new ElementMatch<CodeInstruction>($"{{ldloc.a(.s) {index}}}", i => AnyLdloca.Matches(i) && ExtractLocalIndex(i) == index);
+
+        /// <summary>
+        /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given instruction.
+        /// </summary>
+        /// <param name="instruction">The instruction to match against.</param>
+        public static IElementMatch<CodeInstruction> Ldloca(CodeInstruction instruction)
+            => new ElementMatch<CodeInstruction>($"{{ldloc.a(.s) matching {instruction}}}", i => Ldloca(i).Matches(i));
 
         /// <summary>
         /// Matches an <c>ldloca</c>(<c>.s</c>) instruction matching the given type.
