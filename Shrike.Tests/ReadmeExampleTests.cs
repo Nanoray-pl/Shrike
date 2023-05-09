@@ -52,7 +52,7 @@ namespace Nanoray.Shrike.Tests
         {
             var matcher = new SequenceBlockMatcher<string>(
                 "a", "bb", "ccc", "dd", "e", "ff", "ggg", "hhhh", "iiiii", "jjjj", "kkk", "ll", "m", "nn", "ooo", "pp", "q"
-            ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>()
+            ).AsGuidAnchorable()
                 .Find(
                     new ElementMatch<string>("1-long", e => e.Length == 1),
                     new ElementMatch<string>("2-long", e => e.Length == 2),

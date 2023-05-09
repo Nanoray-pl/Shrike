@@ -11,7 +11,7 @@ namespace Nanoray.Shrike.Tests
         {
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "b", "c", "d", "e"
-            ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
+            ).AsGuidAnchorable();
 
             Assert.AreEqual(0, blockMatcher.StartIndex());
             Assert.AreEqual(5, blockMatcher.EndIndex());
@@ -43,7 +43,7 @@ namespace Nanoray.Shrike.Tests
         {
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "b", "c", "d", "e"
-            ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
+            ).AsGuidAnchorable();
 
             var pointerMatcher = blockMatcher
                 .PointerMatcher(SequenceMatcherRelativeElement.First)
@@ -69,7 +69,7 @@ namespace Nanoray.Shrike.Tests
         {
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "b", "c", "d", "e"
-            ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
+            ).AsGuidAnchorable();
 
             blockMatcher = blockMatcher
                 .PointerMatcher(SequenceMatcherRelativeElement.First)
@@ -101,7 +101,7 @@ namespace Nanoray.Shrike.Tests
         {
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "b", "c", "d", "e"
-            ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
+            ).AsGuidAnchorable();
 
             blockMatcher = blockMatcher
                 .BlockMatcherBeforeFirst()
@@ -135,7 +135,7 @@ namespace Nanoray.Shrike.Tests
         {
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "b", "c", "d", "e", "f", "g", "h"
-            ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
+            ).AsGuidAnchorable();
 
             blockMatcher = blockMatcher
                 .BlockMatcherBeforeFirst()
@@ -178,7 +178,7 @@ namespace Nanoray.Shrike.Tests
         {
             var blockMatcher = new SequenceBlockMatcher<string>(
                 "a", "bb", "ccc", "dd", "eee"
-            ).AsAnchorable<string, Guid, Guid, SequencePointerMatcher<string>, SequenceBlockMatcher<string>>();
+            ).AsGuidAnchorable();
 
             blockMatcher = blockMatcher
                 .Find(

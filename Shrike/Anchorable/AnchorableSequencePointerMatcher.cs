@@ -148,4 +148,21 @@ namespace Nanoray.Shrike
             where TWrappedBlockMatcher : ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
             => new(self);
     }
+
+    /// <summary>
+    /// A static class hosting additional extensions for the <see cref="ISequencePointerMatcher{TElement, TPointerMatcher, TBlockMatcher}"/> type, relating to the functionality of the <see cref="AnchorableSequencePointerMatcher{TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher}"/> type, for pre-specified anchor types.
+    /// </summary>
+    public static class AnchorableSequencePointerMatcherSpecificTypeGenerators
+    {
+        /// <summary>
+        /// Creates an anchorable pointer matcher representing the same state as this matcher.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TWrappedPointerMatcher">The underlying pointer matcher type.</typeparam>
+        /// <typeparam name="TWrappedBlockMatcher">The underlying block matcher type.</typeparam>
+        public static AnchorableSequencePointerMatcher<TElement, Guid, Guid, TWrappedPointerMatcher, TWrappedBlockMatcher> AsGuidAnchorable<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>(this ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> self)
+            where TWrappedPointerMatcher : ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
+            where TWrappedBlockMatcher : ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
+            => new(self);
+    }
 }
