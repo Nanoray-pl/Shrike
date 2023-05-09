@@ -34,10 +34,11 @@ namespace Nanoray.Shrike
         /// <inheritdoc/>
         public SequencePointerMatcher<TElement> Replace(TElement element)
         {
-            if (this.Index() >= this.AllElements().Count)
+            var allElements = this.AllElements();
+            if (this.Index() >= allElements.Count)
                 throw new SequenceMatcherException("No instruction to replace (the pointer is past all instructions).");
 
-            var result = this.AllElements().ToList();
+            var result = allElements.ToList();
             result[this.Index()] = element;
             return new(result, this.Index());
         }
@@ -45,24 +46,26 @@ namespace Nanoray.Shrike
         /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Remove()
         {
+            var allElements = this.AllElements();
             List<TElement> result = new();
-            result.AddRange(this.AllElements().Take(this.Index()));
-            result.AddRange(this.AllElements().Skip(this.Index() + 1));
+            result.AddRange(allElements.Take(this.Index()));
+            result.AddRange(allElements.Skip(this.Index() + 1));
             return new(result, this.Index(), 0);
         }
 
         /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, SequenceMatcherInsertionResultingBounds resultingBounds, IEnumerable<TElement> elements)
         {
+            var allElements = this.AllElements();
             List<TElement> result = new();
             switch (position)
             {
                 case SequenceMatcherPastBoundsDirection.Before:
                     {
-                        result.AddRange(this.AllElements().Take(this.Index()));
+                        result.AddRange(allElements.Take(this.Index()));
                         result.AddRange(elements);
-                        result.AddRange(this.AllElements().Skip(this.Index()));
-                        int lengthDifference = result.Count - this.AllElements().Count;
+                        result.AddRange(allElements.Skip(this.Index()));
+                        int lengthDifference = result.Count - allElements.Count;
                         return resultingBounds switch
                         {
                             SequenceMatcherInsertionResultingBounds.ExcludingInsertion => new(result, this.Index() + lengthDifference, 1),
@@ -73,10 +76,10 @@ namespace Nanoray.Shrike
                     }
                 case SequenceMatcherPastBoundsDirection.After:
                     {
-                        result.AddRange(this.AllElements().Take(this.Index() + 1));
+                        result.AddRange(allElements.Take(this.Index() + 1));
                         result.AddRange(elements);
-                        result.AddRange(this.AllElements().Skip(this.Index() + 1));
-                        int lengthDifference = result.Count - this.AllElements().Count;
+                        result.AddRange(allElements.Skip(this.Index() + 1));
+                        int lengthDifference = result.Count - allElements.Count;
                         return resultingBounds switch
                         {
                             SequenceMatcherInsertionResultingBounds.ExcludingInsertion => new(result, this.Index(), 1),
@@ -93,28 +96,30 @@ namespace Nanoray.Shrike
         /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Replace(IEnumerable<TElement> elements)
         {
+            var allElements = this.AllElements();
             List<TElement> result = new();
-            result.AddRange(this.AllElements().Take(this.Index()));
+            result.AddRange(allElements.Take(this.Index()));
             result.AddRange(elements);
-            result.AddRange(this.AllElements().Skip(this.Index() + 1));
-            int lengthDifference = result.Count - this.AllElements().Count;
+            result.AddRange(allElements.Skip(this.Index() + 1));
+            int lengthDifference = result.Count - allElements.Count;
             return new(result, this.Index(), lengthDifference + 1);
         }
 
         /// <inheritdoc/>
         public SequencePointerMatcher<TElement> Remove(SequenceMatcherPastBoundsDirection postRemovalPosition)
         {
-            if (this.Index() >= this.AllElements().Count)
+            var allElements = this.AllElements();
+            if (this.Index() >= allElements.Count)
                 throw new SequenceMatcherException("No instruction to remove (the pointer is past all instructions).");
-            if (this.AllElements().Count == 0)
+            if (allElements.Count == 0)
                 throw new SequenceMatcherException("No instruction to remove.");
 
-            var result = this.AllElements().ToList();
+            var result = allElements.ToList();
             result.RemoveAt(this.Index());
             return postRemovalPosition switch
             {
                 SequenceMatcherPastBoundsDirection.Before => new(result, Math.Max(this.Index() - 1, 0)),
-                SequenceMatcherPastBoundsDirection.After => new(result, Math.Min(this.Index(), this.AllElements().Count - 1)),
+                SequenceMatcherPastBoundsDirection.After => new(result, Math.Min(this.Index(), allElements.Count - 1)),
                 _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
             };
         }

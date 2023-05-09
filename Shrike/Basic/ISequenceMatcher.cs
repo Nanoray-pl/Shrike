@@ -182,6 +182,7 @@ namespace Nanoray.Shrike
         /// <returns>A new block matcher pointing at the sequence of elements matching the given criteria.</returns>
         TBlockMatcher Find(SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, IReadOnlyList<IElementMatch<TElement>> toFind)
         {
+            var allElements = this.AllElements();
             var findBoundsMatcher = this.BlockMatcher(bounds);
             int startIndex = findBoundsMatcher.StartIndex();
             int endIndex = findBoundsMatcher.EndIndex();
@@ -194,7 +195,7 @@ namespace Nanoray.Shrike
                         {
                             for (int toFindIndex = 0; toFindIndex < toFind.Count; toFindIndex++)
                             {
-                                if (!toFind[toFindIndex].Matches(this.AllElements()[index + toFindIndex]))
+                                if (!toFind[toFindIndex].Matches(allElements[index + toFindIndex]))
                                     goto continueOuter;
                             }
                             return this.MakeBlockMatcher(index, toFind.Count);
@@ -209,7 +210,7 @@ namespace Nanoray.Shrike
                         {
                             for (int toFindIndex = toFind.Count - 1; toFindIndex >= 0; toFindIndex--)
                             {
-                                if (!toFind[toFindIndex].Matches(this.AllElements()[index + toFindIndex - toFind.Count + 1]))
+                                if (!toFind[toFindIndex].Matches(allElements[index + toFindIndex - toFind.Count + 1]))
                                     goto continueOuter;
                             }
                             return this.MakeBlockMatcher(index - toFind.Count + 1, toFind.Count);

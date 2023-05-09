@@ -63,35 +63,38 @@ namespace Nanoray.Shrike
         /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Remove()
         {
+            var allElements = this.AllElements();
             List<TElement> result = new();
-            result.AddRange(this.AllElements().Take(this.StartIndex()));
-            result.AddRange(this.AllElements().Skip(this.StartIndex() + this.Length()));
+            result.AddRange(allElements.Take(this.StartIndex()));
+            result.AddRange(allElements.Skip(this.StartIndex() + this.Length()));
             return new(result, this.StartIndex(), 0);
         }
 
         /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Replace(IEnumerable<TElement> elements)
         {
+            var allElements = this.AllElements();
             List<TElement> result = new();
-            result.AddRange(this.AllElements().Take(this.StartIndex()));
+            result.AddRange(allElements.Take(this.StartIndex()));
             result.AddRange(elements);
-            result.AddRange(this.AllElements().Skip(this.StartIndex() + this.Length()));
-            int lengthDifference = result.Count - this.AllElements().Count;
+            result.AddRange(allElements.Skip(this.StartIndex() + this.Length()));
+            int lengthDifference = result.Count - allElements.Count;
             return new(result, this.StartIndex(), lengthDifference + this.Length());
         }
 
         /// <inheritdoc/>
         public override SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, SequenceMatcherInsertionResultingBounds resultingBounds, IEnumerable<TElement> elements)
         {
+            var allElements = this.AllElements();
             List<TElement> result = new();
             switch (position)
             {
                 case SequenceMatcherPastBoundsDirection.Before:
                     {
-                        result.AddRange(this.AllElements().Take(this.StartIndex()));
+                        result.AddRange(allElements.Take(this.StartIndex()));
                         result.AddRange(elements);
-                        result.AddRange(this.AllElements().Skip(this.StartIndex()));
-                        int lengthDifference = result.Count - this.AllElements().Count;
+                        result.AddRange(allElements.Skip(this.StartIndex()));
+                        int lengthDifference = result.Count - allElements.Count;
                         return resultingBounds switch
                         {
                             SequenceMatcherInsertionResultingBounds.ExcludingInsertion => new(result, this.StartIndex() + lengthDifference, this.Length()),
@@ -102,10 +105,10 @@ namespace Nanoray.Shrike
                     }
                 case SequenceMatcherPastBoundsDirection.After:
                     {
-                        result.AddRange(this.AllElements().Take(this.EndIndex()));
+                        result.AddRange(allElements.Take(this.EndIndex()));
                         result.AddRange(elements);
-                        result.AddRange(this.AllElements().Skip(this.EndIndex()));
-                        int lengthDifference = result.Count - this.AllElements().Count;
+                        result.AddRange(allElements.Skip(this.EndIndex()));
+                        int lengthDifference = result.Count - allElements.Count;
                         return resultingBounds switch
                         {
                             SequenceMatcherInsertionResultingBounds.ExcludingInsertion => new(result, this.StartIndex(), this.Length()),
