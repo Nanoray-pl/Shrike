@@ -134,5 +134,18 @@ namespace Nanoray.Shrike
             where TWrappedPointerMatcher : ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
             where TWrappedBlockMatcher : ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
             => new(self);
+
+        /// <summary>
+        /// Creates an anchorable pointer matcher representing the same state as this matcher.
+        /// </summary>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+        /// <typeparam name="TAnchor">The anchor type.</typeparam>
+        /// <typeparam name="TWrappedPointerMatcher">The underlying pointer matcher type.</typeparam>
+        /// <typeparam name="TWrappedBlockMatcher">The underlying block matcher type.</typeparam>
+        public static AnchorableSequencePointerMatcher<TElement, TAnchor, TAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> AsAnchorable<TElement, TAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>(this ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher> self)
+            where TAnchor : notnull
+            where TWrappedPointerMatcher : ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
+            where TWrappedBlockMatcher : ISequenceBlockMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>
+            => new(self);
     }
 }
