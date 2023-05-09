@@ -105,11 +105,11 @@ namespace Nanoray.Shrike.Tests
 
             blockMatcher = blockMatcher
                 .BlockMatcherBeforeFirst()
-                .Encompass(SequenceMatcherPastBoundsDirection.After, 2)
+                .Encompass(SequenceMatcherEncompassDirection.After, 2)
                 .AnchorBlock(out var startAnchor)
                 .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
                 .BlockMatcherAfterLast()
-                .Encompass(SequenceMatcherPastBoundsDirection.Before, 2)
+                .Encompass(SequenceMatcherEncompassDirection.Before, 2)
                 .AnchorBlock(out var endAnchor)
                 .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence);
 
@@ -139,15 +139,15 @@ namespace Nanoray.Shrike.Tests
 
             blockMatcher = blockMatcher
                 .BlockMatcherBeforeFirst()
-                .Encompass(SequenceMatcherPastBoundsDirection.After, 2)
+                .Encompass(SequenceMatcherEncompassDirection.After, 2)
                 .AnchorBlock(out var startAnchor)
                 .PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence)
                 .Advance(3)
-                .Encompass(SequenceMatcherPastBoundsDirection.After, 1)
+                .Encompass(SequenceMatcherEncompassDirection.After, 1)
                 .AnchorBlock(out var middleAnchor)
                 .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
                 .BlockMatcherAfterLast()
-                .Encompass(SequenceMatcherPastBoundsDirection.Before, 2)
+                .Encompass(SequenceMatcherEncompassDirection.Before, 2)
                 .AnchorBlock(out var endAnchor)
                 .BlockMatcher(SequenceMatcherRelativeBounds.WholeSequence)
                 .BlockMatcher(middleAnchor)

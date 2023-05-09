@@ -54,8 +54,7 @@ IEnumerable<string> newElements = new SequenceBlockMatcher<string>(
         new ElementMatch<string>("5-long", e => e.Length == 5)
     )
     .PointerMatcher(anchor)
-    .Encompass(SequenceMatcherPastBoundsDirection.After, 1)
-    .Encompass(SequenceMatcherPastBoundsDirection.Before, 1)
+    .Encompass(SequenceMatcherEncompassDirection.Both, 1)
     .Remove()
     .AllElements();
 ```

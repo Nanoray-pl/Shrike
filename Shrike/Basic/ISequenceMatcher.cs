@@ -230,7 +230,7 @@ namespace Nanoray.Shrike
         /// <param name="direction">The direction to encompass elements at.</param>
         /// <param name="length">The number of next/previous elements to encompass.</param>
         /// <returns>A new block matcher pointing at the same elements this sequence matcher points at, and additionally the given number of next/previous elements.</returns>
-        TBlockMatcher Encompass(SequenceMatcherPastBoundsDirection direction, int length)
+        TBlockMatcher Encompass(SequenceMatcherEncompassDirection direction, int length)
         {
             if (length < 0)
                 throw new IndexOutOfRangeException($"Invalid value {length} for parameter `{nameof(length)}`.");
@@ -239,9 +239,10 @@ namespace Nanoray.Shrike
                 return blockMatcher;
             return direction switch
             {
-                SequenceMatcherPastBoundsDirection.Before => this.MakeBlockMatcher(blockMatcher.StartIndex() - length, blockMatcher.Length() + length),
-                SequenceMatcherPastBoundsDirection.After => this.MakeBlockMatcher(blockMatcher.StartIndex(), blockMatcher.Length() + length),
-                _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
+                SequenceMatcherEncompassDirection.Before => this.MakeBlockMatcher(blockMatcher.StartIndex() - length, blockMatcher.Length() + length),
+                SequenceMatcherEncompassDirection.After => this.MakeBlockMatcher(blockMatcher.StartIndex(), blockMatcher.Length() + length),
+                SequenceMatcherEncompassDirection.Both => this.MakeBlockMatcher(blockMatcher.StartIndex() - length, blockMatcher.Length() + length * 2),
+                _ => throw new ArgumentException($"{nameof(SequenceMatcherEncompassDirection)} has an invalid value."),
             };
         }
 
@@ -440,7 +441,7 @@ namespace Nanoray.Shrike
         /// <param name="direction">The direction to encompass elements at.</param>
         /// <param name="length">The number of next/previous elements to encompass.</param>
         /// <returns>A new block matcher pointing at the same elements this sequence matcher points at, and additionally the given number of next/previous elements.</returns>
-        public static TBlockMatcher Encompass<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherPastBoundsDirection direction, int length)
+        public static TBlockMatcher Encompass<TElement, TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<TElement, TPointerMatcher, TBlockMatcher> self, SequenceMatcherEncompassDirection direction, int length)
             where TPointerMatcher : ISequencePointerMatcher<TElement, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<TElement, TPointerMatcher, TBlockMatcher>
             => self.Encompass(direction, length);

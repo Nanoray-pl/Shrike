@@ -61,8 +61,7 @@ namespace Nanoray.Shrike.Tests
                     new ElementMatch<string>("5-long", e => e.Length == 5)
                 )
                 .PointerMatcher(anchor)
-                .Encompass(SequenceMatcherPastBoundsDirection.After, 1)
-                .Encompass(SequenceMatcherPastBoundsDirection.Before, 1)
+                .Encompass(SequenceMatcherEncompassDirection.Both, 1)
                 .Remove();
 
             Assert.AreEqual(5, matcher.StartIndex());
