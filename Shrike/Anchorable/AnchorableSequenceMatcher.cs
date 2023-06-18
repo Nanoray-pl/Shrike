@@ -11,9 +11,7 @@ namespace Nanoray.Shrike
     /// <typeparam name="TBlockAnchor">The block anchor type.</typeparam>
     /// <typeparam name="TWrappedPointerMatcher">The underlying pointer matcher type.</typeparam>
     /// <typeparam name="TWrappedBlockMatcher">The underlying block matcher type.</typeparam>
-    public abstract record AnchorableSequenceMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> :
-        IPointerAnchorableSequenceMatcher<TElement, AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, TPointerAnchor>,
-        IBlockAnchorableSequenceMatcher<TElement, AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>, TBlockAnchor>
+    public abstract record AnchorableSequenceMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher>
         where TPointerAnchor : notnull
         where TBlockAnchor : notnull
         where TWrappedPointerMatcher : ISequencePointerMatcher<TElement, TWrappedPointerMatcher, TWrappedBlockMatcher>

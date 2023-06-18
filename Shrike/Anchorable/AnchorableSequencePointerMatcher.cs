@@ -65,6 +65,18 @@ namespace Nanoray.Shrike
         }
 
         /// <inheritdoc/>
+        public AnchorableSequenceBlockMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> EncompassUntil(TPointerAnchor anchor)
+        {
+            if (!this.AnchoredPointers.TryGetValue(anchor, out int anchorIndex))
+                throw new SequenceMatcherException($"Unknown pointer anchor {anchor}.");
+
+            int index = this.Index();
+            int min = Math.Min(index, anchorIndex);
+            int max = Math.Max(index, anchorIndex);
+            return this.MakeBlockMatcher(min, max - min + 1);
+        }
+
+        /// <inheritdoc/>
         public AnchorableSequencePointerMatcher<TElement, TPointerAnchor, TBlockAnchor, TWrappedPointerMatcher, TWrappedBlockMatcher> AnchorPointer(TPointerAnchor anchor)
         {
             Dictionary<TPointerAnchor, int> anchoredPointers = new(this.AnchoredPointers) { [anchor] = this.Index() };

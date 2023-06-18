@@ -20,6 +20,13 @@ namespace Nanoray.Shrike
         /// <param name="anchor">The anchor to move to.</param>
         /// <returns>A new pointer matcher, pointing at a pointer anchored earlier.</returns>
         TPointerMatcher PointerMatcher(TAnchor anchor);
+
+        /// <summary>
+        /// Returns a new block matcher, encompassing all elements between the current one and the one pointed at by the given anchor.
+        /// </summary>
+        /// <param name="anchor">The anchor to encompass until.</param>
+        /// <returns>A new block matcher, encompassing all elements between the current one and the one pointed at by the given anchor.</returns>
+        TBlockMatcher EncompassUntil(TAnchor anchor);
     }
 
     /// <summary>
