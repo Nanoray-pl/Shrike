@@ -11,7 +11,7 @@
 		<PackageTags>sequence; matching; match</PackageTags>
 		<Authors>Shockah</Authors>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>2.0.0</Version>
+		<Version>2.0.1</Version>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Description>An additional library for Shrike, for usage with the Harmony method patching library.</Description>
 		<Copyright>Nanoray</Copyright>
