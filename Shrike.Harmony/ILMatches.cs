@@ -451,7 +451,7 @@ namespace Nanoray.Shrike.Harmony
         /// </summary>
         /// <param name="methodName">The method name.</param>
         public static IElementMatch<CodeInstruction> Call(string methodName)
-            => new ElementMatch<CodeInstruction>($"{{(any) call to method named `{methodName}`}}", i => AnyCall.Matches(i) && ((MethodInfo)i.operand).Name == methodName);
+            => new ElementMatch<CodeInstruction>($"{{(any) call to method named `{methodName}`}}", i => AnyCall.Matches(i) && (i.operand as MethodInfo)?.Name == methodName);
 
         /// <summary>
         /// Matches a <c>newobj</c> instruction matching the given constructor.
