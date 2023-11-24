@@ -2,6 +2,11 @@
 
 # Release notes
 
+## 2.0.2
+Released 24 November 2023.
+
+* Removed transitive Harmony dependency from the `Shrike.Harmony` package.
+
 ## 2.0.1
 Released 23 November 2023.
 
