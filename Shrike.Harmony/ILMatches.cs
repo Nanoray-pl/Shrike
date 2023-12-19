@@ -558,6 +558,34 @@ public static class ILMatches
         => Stfld(typeof(T));
 
     /// <summary>
+    /// Matches an <c>ldfld.a</c> instruction matching the given field.
+    /// </summary>
+    /// <param name="field">The field.</param>
+    public static ElementMatch<CodeInstruction> Ldflda(FieldInfo field)
+        => new($"{{ldfld.a {field}}}", i => i.opcode == OpCodes.Ldflda && (FieldInfo)i.operand == field);
+
+    /// <summary>
+    /// Matches an <c>ldfld.a</c> instruction matching the given field name.
+    /// </summary>
+    /// <param name="fieldName">The field name.</param>
+    public static ElementMatch<CodeInstruction> Ldflda(string fieldName)
+        => new($"{{ldfld.a named {fieldName}}}", i => i.opcode == OpCodes.Ldflda && ((FieldInfo)i.operand).Name == fieldName);
+
+    /// <summary>
+    /// Matches an <c>ldfld.a</c> instruction matching the given type.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    public static ElementMatch<CodeInstruction> Ldflda(Type type)
+        => new($"{{ldflda matching type {type}}}", i => i.opcode == OpCodes.Ldflda && ((FieldInfo)i.operand).FieldType == type);
+
+    /// <summary>
+    /// Matches an <c>ldfld.a</c> instruction matching the given type.
+    /// </summary>
+    /// <typeparam name="T">The type.</typeparam>
+    public static ElementMatch<CodeInstruction> Ldflda<T>()
+        => Ldflda(typeof(T));
+
+    /// <summary>
     /// Matches a <c>call</c>(<c>virt</c>) instruction matching the given method.
     /// </summary>
     /// <param name="method">The method.</param>
