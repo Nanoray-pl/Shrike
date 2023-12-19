@@ -88,14 +88,14 @@ namespace Nanoray.Shrike.Harmony
         }
 
         /// <summary>
-        /// Tries to extract a branch instruction target label.
+        /// Tries to retrieve a branch instruction target label.
         /// </summary>
         /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
         /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="label">The extracted label, or <c>null</c>.</param>
         /// <returns>The current matcher.</returns>
-        public static TPointerMatcher TryExtractBranchTarget<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out Label? label)
+        public static TPointerMatcher TryGetBranchTarget<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out Label? label)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
@@ -107,14 +107,14 @@ namespace Nanoray.Shrike.Harmony
         }
 
         /// <summary>
-        /// Extracts a branch instruction target label.
+        /// Retrieves a branch instruction target label.
         /// </summary>
         /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
         /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="label">The extracted label.</param>
         /// <returns>The current matcher.</returns>
-        public static TPointerMatcher ExtractBranchTarget<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out Label label)
+        public static TPointerMatcher GetBranchTarget<TPointerMatcher, TBlockMatcher>(this ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, out Label label)
             where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
             where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
         {
