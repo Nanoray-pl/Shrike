@@ -14,14 +14,14 @@ public static class ElementMatchExt
     /// </summary>
     /// <param name="self">The match.</param>
     /// <param name="instructionReference">A reference where the created instruction will be stored.</param>
-    /// <returns>A new match with a <c>Find</c> delegate that will anchor this element.</returns>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> TryCreateLdlocInstruction(this ElementMatch<CodeInstruction> self, out NullableObjectRef<CodeInstruction> instructionReference)
     {
         NullableObjectRef<CodeInstruction> reference = new();
         instructionReference = reference;
         return self.WithDelegate((matcher, index, element) =>
         {
-            matcher.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(index).TryCreateLdlocInstruction(out var instruction);
+            matcher.MakePointerMatcher(index).TryCreateLdlocInstruction(out var instruction);
             reference.Value = instruction;
             return matcher;
         });
@@ -32,14 +32,14 @@ public static class ElementMatchExt
     /// </summary>
     /// <param name="self">The match.</param>
     /// <param name="instructionReference">A reference where the created instruction will be stored.</param>
-    /// <returns>A new match with a <c>Find</c> delegate that will anchor this element.</returns>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> CreateLdlocInstruction(this ElementMatch<CodeInstruction> self, out ObjectRef<CodeInstruction> instructionReference)
     {
         ObjectRef<CodeInstruction> reference = new(null!);
         instructionReference = reference;
         return self.WithDelegate((matcher, index, element) =>
         {
-            matcher.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(index).CreateLdlocInstruction(out var instruction);
+            matcher.MakePointerMatcher(index).CreateLdlocInstruction(out var instruction);
             reference.Value = instruction;
             return matcher;
         });
@@ -50,14 +50,14 @@ public static class ElementMatchExt
     /// </summary>
     /// <param name="self">The match.</param>
     /// <param name="instructionReference">A reference where the created instruction will be stored.</param>
-    /// <returns>A new match with a <c>Find</c> delegate that will anchor this element.</returns>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> TryCreateStlocInstruction(this ElementMatch<CodeInstruction> self, out NullableObjectRef<CodeInstruction> instructionReference)
     {
         NullableObjectRef<CodeInstruction> reference = new();
         instructionReference = reference;
         return self.WithDelegate((matcher, index, element) =>
         {
-            matcher.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(index).TryCreateStlocInstruction(out var instruction);
+            matcher.MakePointerMatcher(index).TryCreateStlocInstruction(out var instruction);
             reference.Value = instruction;
             return matcher;
         });
@@ -68,14 +68,14 @@ public static class ElementMatchExt
     /// </summary>
     /// <param name="self">The match.</param>
     /// <param name="instructionReference">A reference where the created instruction will be stored.</param>
-    /// <returns>A new match with a <c>Find</c> delegate that will anchor this element.</returns>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> CreateStlocInstruction(this ElementMatch<CodeInstruction> self, out ObjectRef<CodeInstruction> instructionReference)
     {
         ObjectRef<CodeInstruction> reference = new(null!);
         instructionReference = reference;
         return self.WithDelegate((matcher, index, element) =>
         {
-            matcher.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(index).CreateStlocInstruction(out var instruction);
+            matcher.MakePointerMatcher(index).CreateStlocInstruction(out var instruction);
             reference.Value = instruction;
             return matcher;
         });
@@ -86,14 +86,14 @@ public static class ElementMatchExt
     /// </summary>
     /// <param name="self">The match.</param>
     /// <param name="instructionReference">A reference where the created instruction will be stored.</param>
-    /// <returns>A new match with a <c>Find</c> delegate that will anchor this element.</returns>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> TryCreateLdlocaInstruction(this ElementMatch<CodeInstruction> self, out NullableObjectRef<CodeInstruction> instructionReference)
     {
         NullableObjectRef<CodeInstruction> reference = new();
         instructionReference = reference;
         return self.WithDelegate((matcher, index, element) =>
         {
-            matcher.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(index).TryCreateLdlocaInstruction(out var instruction);
+            matcher.MakePointerMatcher(index).TryCreateLdlocaInstruction(out var instruction);
             reference.Value = instruction;
             return matcher;
         });
@@ -104,14 +104,14 @@ public static class ElementMatchExt
     /// </summary>
     /// <param name="self">The match.</param>
     /// <param name="instructionReference">A reference where the created instruction will be stored.</param>
-    /// <returns>A new match with a <c>Find</c> delegate that will anchor this element.</returns>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> CreateLdlocaInstruction(this ElementMatch<CodeInstruction> self, out ObjectRef<CodeInstruction> instructionReference)
     {
         ObjectRef<CodeInstruction> reference = new(null!);
         instructionReference = reference;
         return self.WithDelegate((matcher, index, element) =>
         {
-            matcher.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(index).CreateLdlocaInstruction(out var instruction);
+            matcher.MakePointerMatcher(index).CreateLdlocaInstruction(out var instruction);
             reference.Value = instruction;
             return matcher;
         });
@@ -123,7 +123,7 @@ public static class ElementMatchExt
     /// <param name="self">The match.</param>
     /// <param name="il">The <see cref="ILGenerator"/> to use.</param>
     /// <param name="label">The newly created label.</param>
-    /// <returns>A new pointer matcher, with a modified instruction without its labels.</returns>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> CreateLabel(this ElementMatch<CodeInstruction> self, ILGenerator il, out Label label)
     {
         var createdLabel = il.DefineLabel();
@@ -133,12 +133,9 @@ public static class ElementMatchExt
             int startIndex = matcher.StartIndex();
             int length = matcher.Length();
             return matcher
-                .PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence)
-                .Advance(index)
+                .MakePointerMatcher(index)
                 .AddLabel(createdLabel)
-                .PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence)
-                .Advance(startIndex)
-                .Encompass(SequenceMatcherEncompassDirection.After, length - 1);
+                .MakeBlockMatcher(startIndex, length);
         });
     }
 
@@ -146,16 +143,52 @@ public static class ElementMatchExt
     /// Extracts labels from the found instruction, removing them from it.
     /// </summary>
     /// <param name="self">The match.</param>
-    /// <param name="labels">A reference where the created instruction will be stored.</param>
-    /// <returns>A new pointer matcher, with a modified instruction without its labels.</returns>
+    /// <param name="labels">A reference where the extracted labels will be stored.</param>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> ExtractLabels(this ElementMatch<CodeInstruction> self, out IReadOnlyList<Label> labels)
     {
         List<Label> labelsReference = new();
         labels = labelsReference;
         return self.WithDelegate((matcher, index, element) =>
         {
-            matcher.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(index).ExtractLabels(out var extractedLabels);
+            matcher.MakePointerMatcher(index).ExtractLabels(out var extractedLabels);
             labelsReference.AddRange(extractedLabels);
+            return matcher;
+        });
+    }
+
+    /// <summary>
+    /// Tries to retrieve a branch instruction target label upon finding an instruction.
+    /// </summary>
+    /// <param name="self">The match.</param>
+    /// <param name="labelReference">A reference where the retrieved label will be stored.</param>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
+    public static ElementMatch<CodeInstruction> TryGetBranchTarget(this ElementMatch<CodeInstruction> self, out NullableStructRef<Label> labelReference)
+    {
+        NullableStructRef<Label> reference = new();
+        labelReference = reference;
+        return self.WithDelegate((matcher, index, element) =>
+        {
+            matcher.MakePointerMatcher(index).TryGetBranchTarget(out var label);
+            reference.Value = label;
+            return matcher;
+        });
+    }
+
+    /// <summary>
+    /// Retrieves a branch instruction target label upon finding an instruction.
+    /// </summary>
+    /// <param name="self">The match.</param>
+    /// <param name="labelReference">A reference where the retrieved label will be stored.</param>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
+    public static ElementMatch<CodeInstruction> GetBranchTarget(this ElementMatch<CodeInstruction> self, out StructRef<Label> labelReference)
+    {
+        StructRef<Label> reference = new(default);
+        labelReference = reference;
+        return self.WithDelegate((matcher, index, element) =>
+        {
+            matcher.MakePointerMatcher(index).GetBranchTarget(out var label);
+            reference.Value = label;
             return matcher;
         });
     }

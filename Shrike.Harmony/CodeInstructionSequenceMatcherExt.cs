@@ -21,7 +21,7 @@ public static class CodeInstructionSequenceMatcherExt
         var instructions = self.AllElements();
         for (int i = 0; i < instructions.Count; i++)
             if (instructions[i].labels.Contains(label))
-                return self.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(i);
+                return self.MakePointerMatcher(i);
         throw new SequenceMatcherException($"Label {label} not found.");
     }
 }

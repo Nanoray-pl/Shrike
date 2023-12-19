@@ -30,6 +30,23 @@ public readonly struct SequenceBlockMatcher<TElement> : ISequenceMatcher<Sequenc
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="SequenceBlockMatcher{TElement}"/> class with the given underlying elements, pointing at specific elements out of these.
+    /// </summary>
+    /// <param name="allElements">All underlying elements this sequence matcher is working with.</param>
+    /// <param name="startIndex">All underlying elements this sequence matcher is working with.</param>
+    /// <param name="length">All underlying elements this sequence matcher is working with.</param>
+    public SequenceBlockMatcher(IEnumerable<TElement> allElements, int startIndex, int length)
+    {
+        this.AllElementsStorage = allElements.ToList();
+        if (startIndex < 0 || startIndex + length > this.AllElementsStorage.Count)
+            throw new IndexOutOfRangeException();
+        this.PointerAttachedDataStorage = new List<SequencePointerAttachedData>();
+        this.BlockAttachedDataStorage = new List<SequenceBlockAttachedData>();
+        this.StartIndexStorage = 0;
+        this.LengthStorage = this.AllElementsStorage.Count;
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="SequenceBlockMatcher{TElement}"/> class with the given underlying elements, pointing at all of those elements.
     /// </summary>
     /// <param name="allElements">All underlying elements this sequence matcher is working with.</param>

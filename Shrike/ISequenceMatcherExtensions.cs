@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Xml.Linq;
-
 namespace Nanoray.Shrike;
 
 /// <summary>
@@ -8,6 +5,27 @@ namespace Nanoray.Shrike;
 /// </summary>
 public static class ISequenceMatcherExtensions
 {
+    /// <summary>
+    /// Creates a new pointer matcher, pointing at an arbitrary element.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+    /// <param name="self">The current matcher.</param>
+    /// <param name="index">The index to point at.</param>
+    /// <returns>A new pointer matcher, pointing at the given element.</returns>
+    public static SequencePointerMatcher<TElement> MakePointerMatcher<TElement>(this ISequenceMatcher<TElement> self, int index)
+        => SequencePointerMatcher<TElement>.From(self, index);
+
+    /// <summary>
+    /// Creates a new block matcher, pointing at an arbitrary range of elements.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
+    /// <param name="self">The current matcher.</param>
+    /// <param name="startIndex">The starting index of the range of elements to point at.</param>
+    /// <param name="length">The length of the range of elements to point at.</param>
+    /// <returns>A new pointer matcher, pointing at the given element.</returns>
+    public static SequenceBlockMatcher<TElement> MakeBlockMatcher<TElement>(this ISequenceMatcher<TElement> self, int startIndex, int length)
+        => SequenceBlockMatcher<TElement>.From(self, startIndex, length);
+
     /// <summary>
     /// Performs an insert operation before/after the elements matched by this sequence matcher.
     /// </summary>
