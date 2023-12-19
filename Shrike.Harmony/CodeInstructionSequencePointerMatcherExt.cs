@@ -24,16 +24,7 @@ namespace Nanoray.Shrike.Harmony
         {
             if (self.Index() >= self.AllElements().Count)
                 throw new SequenceMatcherException("No instruction to add label to (the pointer is past all instructions).");
-
-            var result = self.AllElements().ToList();
-            result[self.Index()] = new(result[self.Index()]);
-            result[self.Index()].labels.Add(label);
-
-#if NET7_0_OR_GREATER
-            return TPointerMatcher.MakeNewPointerMatcher(result, self.Index());
-#else
-            return self.MakeNewPointerMatcher(result, self.Index());
-#endif
+            return self.Replace(new CodeInstruction(self.Element()).WithLabels(label));
         }
 
         /// <summary>
@@ -50,16 +41,7 @@ namespace Nanoray.Shrike.Harmony
         {
             if (self.Index() >= self.AllElements().Count)
                 throw new SequenceMatcherException("No instruction to add labels to (the pointer is past all instructions).");
-
-            var result = self.AllElements().ToList();
-            result[self.Index()] = new(result[self.Index()]);
-            result[self.Index()].labels.AddRange(labels);
-
-#if NET7_0_OR_GREATER
-            return TPointerMatcher.MakeNewPointerMatcher(result, self.Index());
-#else
-            return self.MakeNewPointerMatcher(result, self.Index());
-#endif
+            return self.Replace(new CodeInstruction(self.Element()).WithLabels(labels));
         }
 
         /// <summary>
@@ -77,17 +59,12 @@ namespace Nanoray.Shrike.Harmony
             if (self.Index() >= self.AllElements().Count)
                 throw new SequenceMatcherException("No instruction to extract labels from (the pointer is past all instructions).");
 
-            labels = self.Element().labels.ToHashSet();
-
-            var result = self.AllElements().ToList();
-            result[self.Index()] = new(result[self.Index()]);
-            result[self.Index()].labels.Clear();
-
-#if NET7_0_OR_GREATER
-            return TPointerMatcher.MakeNewPointerMatcher(result, self.Index());
-#else
-            return self.MakeNewPointerMatcher(result, self.Index());
-#endif
+            var instruction = self.Element();
+            labels = instruction.labels.ToHashSet();
+            return self.Replace(new CodeInstruction(instruction.opcode, instruction.operand)
+            {
+                blocks = instruction.blocks.ToList()
+            });
         }
 
         /// <summary>
