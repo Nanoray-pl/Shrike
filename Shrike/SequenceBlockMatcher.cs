@@ -187,6 +187,16 @@ public readonly struct SequenceBlockMatcher<TElement> : ISequenceMatcher<Sequenc
         => this.WithBlockAttachedData(this.StartIndexStorage, this.LengthStorage, data);
     #endregion
 
+    #region Sequence modification
+    /// <inheritdoc/>
+    public SequenceBlockMatcher<TElement> Do(Func<SequenceBlockMatcher<TElement>, SequenceBlockMatcher<TElement>> closure)
+    {
+        var innerMatcher = new SequenceBlockMatcher<TElement>(this.Elements());
+        var modifiedMatcher = closure(innerMatcher);
+        return this.Replace(modifiedMatcher.AllElements());
+    }
+    #endregion
+
     #region Default implementation delegating
     /// <inheritdoc/>
     public SequenceBlockMatcher<TElement> Insert(SequenceMatcherPastBoundsDirection position, SequenceMatcherInsertionResultingBounds resultingBounds, IEnumerable<TElement> elements)

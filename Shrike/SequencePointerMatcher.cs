@@ -20,7 +20,7 @@ public readonly struct SequencePointerMatcher<TElement> : ISequenceMatcher<Seque
     /// </summary>
     /// <param name="allElements">All underlying elements this sequence matcher is working with.</param>
     /// <param name="index">The index this pointer matcher should point at.</param>
-    public SequencePointerMatcher(IEnumerable<TElement> allElements, int index)
+    public SequencePointerMatcher(IEnumerable<TElement> allElements, int index = 0)
     {
         this.AllElementsStorage = allElements.ToList();
         if (index < 0 || index >= this.AllElementsStorage.Count)
@@ -157,6 +157,16 @@ public readonly struct SequencePointerMatcher<TElement> : ISequenceMatcher<Seque
     /// <returns>A new matcher containing the additional data.</returns>
     public SequencePointerMatcher<TElement> WithPointerAttachedData(object data)
         => this.WithPointerAttachedData(this.IndexStorage, data);
+    #endregion
+
+    #region Sequence modification
+    /// <inheritdoc/>
+    public SequenceBlockMatcher<TElement> Do(Func<SequencePointerMatcher<TElement>, SequenceBlockMatcher<TElement>> closure)
+    {
+        var innerMatcher = new SequencePointerMatcher<TElement>(new[] { this.Element() });
+        var modifiedMatcher = closure(innerMatcher);
+        return this.Replace(modifiedMatcher.AllElements());
+    }
     #endregion
 
     #region Cursor manipulation

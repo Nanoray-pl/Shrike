@@ -175,4 +175,13 @@ public interface ISequenceMatcher<TSelf, TElement> : ISequenceMatcher<TElement>
     /// <returns>A new matcher containing the additional data.</returns>
     TSelf WithBlockAttachedData(int startIndex, int length, object data);
     #endregion
+
+    #region Sequence modification
+    /// <summary>
+    /// Performs a provided set of operations on <i>only</i> the elements matched by this matcher.
+    /// </summary>
+    /// <param name="closure">The set of operations to perform.</param>
+    /// <returns>A new block matcher representing the state after performing the provided set of operations on the elements matched by this matcher.</returns>
+    SequenceBlockMatcher<TElement> Do(Func<TSelf, SequenceBlockMatcher<TElement>> closure);
+    #endregion
 }
