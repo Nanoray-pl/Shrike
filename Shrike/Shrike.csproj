@@ -1,36 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<RootNamespace>Nanoray.Shrike</RootNamespace>
-		<TargetFrameworks>net5.0;net7.0</TargetFrameworks>
+  <PropertyGroup>
+    <RootNamespace>Nanoray.Shrike</RootNamespace>
+    <TargetFrameworks>net5.0;net7.0</TargetFrameworks>
     <LangVersion>11</LangVersion>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<Company>Nanoray</Company>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/Nanoray-pl/Shrike</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/Nanoray-pl/Shrike</PackageProjectUrl>
-		<PackageTags>sequence; matching; match</PackageTags>
-		<Authors>Shockah</Authors>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>2.1.0</Version>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Description>A generic sequence matching library, with an additional IL-tailored sublibrary.</Description>
-		<Copyright>Nanoray</Copyright>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	</PropertyGroup>
-	<PropertyGroup>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	</PropertyGroup>
-	<ItemGroup>
-		<None Include="..\.editorconfig" Link=".editorconfig" />
-		<None Include="..\docs\README.md">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="..\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-	</ItemGroup>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Company>Nanoray</Company>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Nanoray-pl/Shrike</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Nanoray-pl/Shrike</PackageProjectUrl>
+    <PackageTags>sequence; matching; match</PackageTags>
+    <Authors>Shockah</Authors>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>2.1.0</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>A generic sequence matching library, with an additional IL-tailored sublibrary.</Description>
+    <Copyright>Nanoray</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\docs\README.md" Pack="True" PackagePath="\" />
+    <None Include="..\LICENSE" Pack="True" PackagePath="\" />
+  </ItemGroup>
 </Project>

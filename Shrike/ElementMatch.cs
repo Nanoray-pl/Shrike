@@ -22,7 +22,7 @@ public readonly struct ElementMatch<TElement>
     public string Description { get; init; }
 
     /// <summary>
-    /// A list of delegates which will be called whenever this matcher matches any method during the use of the <see cref="ISequenceMatcher{TElement, TPointerMatcher, TBlockMatcher}.Find(SequenceBlockMatcherFindOccurence, SequenceMatcherRelativeBounds, IReadOnlyList{ElementMatch{TElement, TPointerMatcher, TBlockMatcher}})"/> method.
+    /// A list of delegates which will be called whenever this matcher matches any method during the use of the <see cref="ISequenceMatcher{TElement}.Find(SequenceBlockMatcherFindOccurence, SequenceMatcherRelativeBounds, IReadOnlyList{ElementMatch{TElement}})"/> method.
     /// </summary>
     public IReadOnlyList<ElementMatchDelegate<TElement>> Delegates { get; init; }
 
@@ -56,7 +56,7 @@ public readonly struct ElementMatch<TElement>
         => this.Closure(element);
 
     /// <summary>
-    /// Creates a copy of the match with an additional match delegate, which will be called whenever this matcher matches any method during the use of the <see cref="ISequenceMatcher{TElement, TPointerMatcher, TBlockMatcher}.Find(SequenceBlockMatcherFindOccurence, SequenceMatcherRelativeBounds, IReadOnlyList{ElementMatch{TElement, TPointerMatcher, TBlockMatcher}})"/> method.
+    /// Creates a copy of the match with an additional match delegate, which will be called whenever this matcher matches any method during the use of the <see cref="ISequenceMatcher{TElement}.Find(SequenceBlockMatcherFindOccurence, SequenceMatcherRelativeBounds, IReadOnlyList{ElementMatch{TElement}})"/> method.
     /// </summary>
     /// <param name="delegate"></param>
     /// <returns>A new element match with an additional match delegate.</returns>

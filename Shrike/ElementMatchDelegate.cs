@@ -1,7 +1,7 @@
 namespace Nanoray.Shrike;
 
 /// <summary>
-/// A delegate called when an <see cref="ElementMatch{TElement}"/> gets found with the <see cref="ISequenceMatcher{TElement, TPointerMatcher, TBlockMatcher}.Find(SequenceBlockMatcherFindOccurence, SequenceMatcherRelativeBounds, System.Collections.Generic.IReadOnlyList{ElementMatch{TElement, TPointerMatcher, TBlockMatcher}})"/> method.
+/// A delegate called when an <see cref="ElementMatch{TElement}"/> gets found with the <see cref="ISequenceMatcher{TElement}.Find(SequenceBlockMatcherFindOccurence, SequenceMatcherRelativeBounds, System.Collections.Generic.IReadOnlyList{ElementMatch{TElement}})"/> method.
 /// </summary>
 /// <typeparam name="TElement">The type of elements this object can match.</typeparam>
 /// <param name="matcher">The block matcher containing the matched element.</param>
