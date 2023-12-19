@@ -123,7 +123,9 @@ namespace Nanoray.Shrike.Tests
             );
 
             blockMatcher = blockMatcher
-                .MakeBlockMatcher(1, 3)
+                .PointerMatcher(SequenceMatcherRelativeElement.First)
+                .Advance(1)
+                .Encompass(SequenceMatcherEncompassDirection.After, 2)
                 .Remove();
 
             Assert.AreEqual(1, blockMatcher.StartIndex());
@@ -277,30 +279,31 @@ namespace Nanoray.Shrike.Tests
             CollectionAssert.AreEqual(new string[] { "dd", "eee" }, blockMatcher.Elements());
         }
 
-        [Test]
-        public void TestForEachRemove()
-        {
-            var blockMatcher = new SequenceBlockMatcher<string>(
-                "a", "bb", "ccc", "dd", "eee"
-            );
+        // TODO: reimplement ForEach
+        //[Test]
+        //public void TestForEachRemove()
+        //{
+        //    var blockMatcher = new SequenceBlockMatcher<string>(
+        //        "a", "bb", "ccc", "dd", "eee"
+        //    );
 
-            blockMatcher = blockMatcher
-                .ForEach(
-                    SequenceMatcherRelativeBounds.WholeSequence,
-                    new IElementMatch<string>[]
-                    {
-                        new ElementMatch<string>("three chars", e => e.Length == 3)
-                    },
-                    matcher => matcher.Remove(),
-                    minExpectedOccurences: 2,
-                    maxExpectedOccurences: 2
-                );
+        //    blockMatcher = blockMatcher
+        //        .ForEach(
+        //            SequenceMatcherRelativeBounds.WholeSequence,
+        //            new ElementMatch<string>[]
+        //            {
+        //                new ElementMatch<string>("three chars", e => e.Length == 3)
+        //            },
+        //            matcher => matcher.Remove(),
+        //            minExpectedOccurences: 2,
+        //            maxExpectedOccurences: 2
+        //        );
 
-            Assert.AreEqual(0, blockMatcher.StartIndex());
-            Assert.AreEqual(3, blockMatcher.EndIndex());
-            Assert.AreEqual(3, blockMatcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "bb", "dd" }, blockMatcher.AllElements());
-            CollectionAssert.AreEqual(new string[] { "a", "bb", "dd" }, blockMatcher.Elements());
-        }
+        //    Assert.AreEqual(0, blockMatcher.StartIndex());
+        //    Assert.AreEqual(3, blockMatcher.EndIndex());
+        //    Assert.AreEqual(3, blockMatcher.Length());
+        //    CollectionAssert.AreEqual(new string[] { "a", "bb", "dd" }, blockMatcher.AllElements());
+        //    CollectionAssert.AreEqual(new string[] { "a", "bb", "dd" }, blockMatcher.Elements());
+        //}
     }
 }

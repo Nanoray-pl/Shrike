@@ -4,28 +4,24 @@ using System.Reflection.Emit;
 namespace Nanoray.Shrike.Harmony
 {
     /// <summary>
-    /// A static class hosting additional extensions for <see cref="ISequenceMatcher{TElement, TPointerMatcher, TBlockMatcher}"/> with <see cref="CodeInstruction"/> elements.
+    /// A static class hosting additional extensions for <see cref="ISequenceMatcher{TElement}"/> with <see cref="CodeInstruction"/> elements.
     /// </summary>
     public static class CodeInstructionSequenceMatcherExt
     {
         /// <summary>
         /// Moves to an instruction with the given label.
         /// </summary>
-        /// <typeparam name="TPointerMatcher">The pointer matcher implementation.</typeparam>
-        /// <typeparam name="TBlockMatcher">The block matcher implementation.</typeparam>
+        /// <typeparam name="TElement">The type of elements this matcher uses.</typeparam>
         /// <param name="self">The current matcher.</param>
         /// <param name="label">The label to move to.</param>
         /// <returns>A new pointer matcher, pointing at instruction with the given label.</returns>
-        public static TPointerMatcher PointerMatcher<TPointerMatcher, TBlockMatcher>(this ISequenceMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher> self, Label label)
-            where TPointerMatcher : ISequencePointerMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
-            where TBlockMatcher : ISequenceBlockMatcher<CodeInstruction, TPointerMatcher, TBlockMatcher>
+        public static SequencePointerMatcher<TElement> PointerMatcher<TElement>(this ISequenceMatcher<TElement> self, Label label)
+            where TElement : CodeInstruction
         {
             var instructions = self.AllElements();
             for (int i = 0; i < instructions.Count; i++)
-            {
                 if (instructions[i].labels.Contains(label))
-                    return self.MakePointerMatcher(i);
-            }
+                    return self.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence).Advance(i);
             throw new SequenceMatcherException($"Label {label} not found.");
         }
     }

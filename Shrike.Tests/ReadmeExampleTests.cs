@@ -52,15 +52,15 @@ namespace Nanoray.Shrike.Tests
         {
             var matcher = new SequenceBlockMatcher<string>(
                 "a", "bb", "ccc", "dd", "e", "ff", "ggg", "hhhh", "iiiii", "jjjj", "kkk", "ll", "m", "nn", "ooo", "pp", "q"
-            ).AsGuidAnchorable()
+            )
                 .Find(
                     new ElementMatch<string>("1-long", e => e.Length == 1),
                     new ElementMatch<string>("2-long", e => e.Length == 2),
-                    new ElementMatch<string>("3-long", e => e.Length == 3).WithAutoAnchor(out Guid anchor),
+                    new ElementMatch<string>("3-long", e => e.Length == 3).Anchor(out Guid anchor),
                     new ElementMatch<string>("4-long", e => e.Length == 4),
                     new ElementMatch<string>("5-long", e => e.Length == 5)
                 )
-                .PointerMatcher(anchor)
+                .Anchors().MoveToPointerAnchor(anchor)
                 .Encompass(SequenceMatcherEncompassDirection.Both, 1)
                 .Remove();
 

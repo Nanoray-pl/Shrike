@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<RootNamespace>Nanoray.Shrike</RootNamespace>
 		<TargetFrameworks>net5.0;net7.0</TargetFrameworks>
+    <LangVersion>11</LangVersion>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Company>Nanoray</Company>

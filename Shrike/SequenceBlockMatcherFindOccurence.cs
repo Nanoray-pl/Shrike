@@ -1,18 +1,17 @@
-namespace Nanoray.Shrike
+namespace Nanoray.Shrike;
+
+/// <summary>
+/// Represents the first or last occurence of a find operation.
+/// </summary>
+public enum SequenceBlockMatcherFindOccurence
 {
     /// <summary>
-    /// Represents the first or last occurence of a find operation.
+    /// The first occurence.
     /// </summary>
-    public enum SequenceBlockMatcherFindOccurence
-    {
-        /// <summary>
-        /// The first occurence.
-        /// </summary>
-        First,
+    First,
 
-        /// <summary>
-        /// The last occurence.
-        /// </summary>
-        Last,
-    }
+    /// <summary>
+    /// The last occurence.
+    /// </summary>
+    Last,
 }
