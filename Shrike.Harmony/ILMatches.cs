@@ -309,6 +309,14 @@ namespace Nanoray.Shrike.Harmony
         /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given type.
         /// </summary>
         /// <typeparam name="T">The type.</typeparam>
+        /// <param name="method">The method to match local variables against.</param>
+        public static ElementMatch<CodeInstruction> Ldloc<T>(MethodBase method)
+            => Ldloc(typeof(T), method);
+
+        /// <summary>
+        /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given type.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
         /// <param name="locals">The method local variable list.</param>
         public static ElementMatch<CodeInstruction> Ldloc<T>(IEnumerable<LocalVariableInfo> locals)
             => Ldloc(typeof(T), locals);
@@ -358,6 +366,14 @@ namespace Nanoray.Shrike.Harmony
         /// <param name="method">The method to match local variables against.</param>
         public static ElementMatch<CodeInstruction> Stloc(Type type, MethodBase method)
             => Stloc(type, method.GetMethodBody()?.LocalVariables ?? Enumerable.Empty<LocalVariableInfo>());
+
+        /// <summary>
+        /// Matches an <c>stloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given type.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        /// <param name="method">The method to match local variables against.</param>
+        public static ElementMatch<CodeInstruction> Stloc<T>(MethodBase method)
+            => Stloc(typeof(T), method);
 
         /// <summary>
         /// Matches an <c>stloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given type.
@@ -417,6 +433,14 @@ namespace Nanoray.Shrike.Harmony
         /// Matches an <c>ldloca</c>(<c>.s</c>) instruction matching the given type.
         /// </summary>
         /// <typeparam name="T">The type.</typeparam>
+        /// <param name="method">The method to match local variables against.</param>
+        public static ElementMatch<CodeInstruction> Ldloca<T>(MethodBase method)
+            => Ldloca(typeof(T), method);
+
+        /// <summary>
+        /// Matches an <c>ldloca</c>(<c>.s</c>) instruction matching the given type.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
         /// <param name="locals">The method local variable list.</param>
         public static ElementMatch<CodeInstruction> Ldloca<T>(IEnumerable<LocalVariableInfo> locals)
             => Ldloca(typeof(T), locals);
@@ -436,6 +460,20 @@ namespace Nanoray.Shrike.Harmony
             => new($"{{ldsfld named {fieldName}}}", i => i.opcode == OpCodes.Ldsfld && ((FieldInfo)i.operand).Name == fieldName);
 
         /// <summary>
+        /// Matches an <c>ldsfld</c> instruction matching the given type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        public static ElementMatch<CodeInstruction> Ldsfld(Type type)
+            => new($"{{ldsfld matching type {type}}}", i => i.opcode == OpCodes.Ldsfld && ((FieldInfo)i.operand).FieldType == type);
+
+        /// <summary>
+        /// Matches an <c>ldsfld</c> instruction matching the given type.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        public static ElementMatch<CodeInstruction> Ldsfld<T>()
+            => Ldsfld(typeof(T));
+
+        /// <summary>
         /// Matches an <c>stsfld</c> instruction matching the given field.
         /// </summary>
         /// <param name="field">The field.</param>
@@ -448,6 +486,20 @@ namespace Nanoray.Shrike.Harmony
         /// <param name="fieldName">The field name.</param>
         public static ElementMatch<CodeInstruction> Stsfld(string fieldName)
             => new($"{{stsfld named {fieldName}}}", i => i.opcode == OpCodes.Stsfld && ((FieldInfo)i.operand).Name == fieldName);
+
+        /// <summary>
+        /// Matches an <c>stsfld</c> instruction matching the given type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        public static ElementMatch<CodeInstruction> Stsfld(Type type)
+            => new($"{{stsfld matching type {type}}}", i => i.opcode == OpCodes.Stsfld && ((FieldInfo)i.operand).FieldType == type);
+
+        /// <summary>
+        /// Matches an <c>stsfld</c> instruction matching the given type.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        public static ElementMatch<CodeInstruction> Stsfld<T>()
+            => Stsfld(typeof(T));
 
         /// <summary>
         /// Matches an <c>ldfld</c> instruction matching the given field.
@@ -464,6 +516,20 @@ namespace Nanoray.Shrike.Harmony
             => new($"{{ldfld named {fieldName}}}", i => i.opcode == OpCodes.Ldfld && ((FieldInfo)i.operand).Name == fieldName);
 
         /// <summary>
+        /// Matches an <c>ldfld</c> instruction matching the given type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        public static ElementMatch<CodeInstruction> Ldfld(Type type)
+            => new($"{{ldfld matching type {type}}}", i => i.opcode == OpCodes.Ldfld && ((FieldInfo)i.operand).FieldType == type);
+
+        /// <summary>
+        /// Matches an <c>ldfld</c> instruction matching the given type.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        public static ElementMatch<CodeInstruction> Ldfld<T>()
+            => Ldfld(typeof(T));
+
+        /// <summary>
         /// Matches an <c>stfld</c> instruction matching the given field.
         /// </summary>
         /// <param name="field">The field.</param>
@@ -476,6 +542,20 @@ namespace Nanoray.Shrike.Harmony
         /// <param name="fieldName">The field name.</param>
         public static ElementMatch<CodeInstruction> Stfld(string fieldName)
             => new($"{{stfld named {fieldName}}}", i => i.opcode == OpCodes.Stfld && ((FieldInfo)i.operand).Name == fieldName);
+
+        /// <summary>
+        /// Matches an <c>stfld</c> instruction matching the given type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        public static ElementMatch<CodeInstruction> Stfld(Type type)
+            => new($"{{stfld matching type {type}}}", i => i.opcode == OpCodes.Stfld && ((FieldInfo)i.operand).FieldType == type);
+
+        /// <summary>
+        /// Matches an <c>stfld</c> instruction matching the given type.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        public static ElementMatch<CodeInstruction> Stfld<T>()
+            => Stfld(typeof(T));
 
         /// <summary>
         /// Matches a <c>call</c>(<c>virt</c>) instruction matching the given method.
