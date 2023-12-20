@@ -2,6 +2,14 @@
 
 # Release notes
 
+## 3.0.0
+Released 19 December 2023.
+
+* Updated to Shrike 3.0.0.
+* You can now do a lot of actions like `CreateLdlocInstruction` directly on `ElementMatch<CodeInstruction>` values. These methods will try to directly return values of correct types, or references to them via `ObjectRef`/`NullableObjectRef`/`StructRef`/`NullableStructRef` types.
+* Added a lot of missing `ILMatches` methods, like `Ldflda` or `LdcR4`.
+* Added additional `ILMatches` methods dealing with `MethodBase`, which removes the need to do `originalMethod.GetMethodBody()!.LocalVariables` manually.
+
 ## 2.0.2
 Released 24 November 2023.
 

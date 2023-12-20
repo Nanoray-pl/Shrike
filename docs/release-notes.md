@@ -2,6 +2,13 @@
 
 # Release notes
 
+## 3.0.0
+Released 19 December 2023.
+
+* Major architecture rewrite, while keeping all the functionality.
+* Anchoring functionality is now baseline and does not need any subclasses or using `AsGuidAnchorable()`.
+* Anchoring functionality is now hidden behind the `.Anchors()` namespacing method.
+
 ## 2.0.0
 Released 9 May 2023.
 
