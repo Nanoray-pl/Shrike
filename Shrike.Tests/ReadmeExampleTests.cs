@@ -60,7 +60,7 @@ namespace Nanoray.Shrike.Tests
                     new ElementMatch<string>("4-long", e => e.Length == 4),
                     new ElementMatch<string>("5-long", e => e.Length == 5)
                 )
-                .Anchors().MoveToPointerAnchor(anchor)
+                .Anchors().PointerMatcher(anchor)
                 .Encompass(SequenceMatcherEncompassDirection.Both, 1)
                 .Remove();
 

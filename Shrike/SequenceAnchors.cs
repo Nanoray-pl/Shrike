@@ -99,7 +99,7 @@ public static class SequenceAnchors
         /// <typeparam name="TAnchor">The anchor type.</typeparam>
         /// <param name="anchor">The anchor to move to.</param>
         /// <returns>A new pointer matcher, pointing at an element anchored earlier.</returns>
-        public SequencePointerMatcher<TElement> MoveToPointerAnchor<TAnchor>(TAnchor anchor)
+        public SequencePointerMatcher<TElement> PointerMatcher<TAnchor>(TAnchor anchor)
         {
             var entry = this.Matcher.PointerAttachedData().FirstOrNull(e => e.Data is AnchorInfo<TAnchor> info && Equals(info.Anchor, anchor)) ?? throw new SequenceMatcherException($"Unknown anchor `{anchor}`");
             var matcher = this.Matcher.PointerMatcher(SequenceMatcherRelativeElement.FirstInWholeSequence);
@@ -112,11 +112,29 @@ public static class SequenceAnchors
         /// <typeparam name="TAnchor">The anchor type.</typeparam>
         /// <param name="anchor">The anchor to move to.</param>
         /// <returns>A new block matcher, pointing at a block anchored earlier.</returns>
-        public SequenceBlockMatcher<TElement> MoveToBlockAnchor<TAnchor>(TAnchor anchor)
+        public SequenceBlockMatcher<TElement> BlockMatcher<TAnchor>(TAnchor anchor)
         {
             var entry = this.Matcher.BlockAttachedData().FirstOrNull(e => e.Data is AnchorInfo<TAnchor> info && Equals(info.Anchor, anchor)) ?? throw new SequenceMatcherException($"Unknown anchor `{anchor}`");
             var matcher = this.Matcher.BlockMatcher();
             return matcher.Copy(startIndex: entry.StartIndex, length: entry.Length);
+        }
+
+        /// <summary>
+        /// Encompasses elements until a given anchor.
+        /// </summary>
+        /// <typeparam name="TAnchor">The anchor type.</typeparam>
+        /// <param name="anchor">The anchor to move to.</param>
+        /// <returns>A new block matcher, pointing at a block anchored earlier.</returns>
+        public SequenceBlockMatcher<TElement> EncompassUntil<TAnchor>(TAnchor anchor)
+        {
+            var entry = this.Matcher.PointerAttachedData().FirstOrNull(e => e.Data is AnchorInfo<TAnchor> info && Equals(info.Anchor, anchor)) ?? throw new SequenceMatcherException($"Unknown anchor `{anchor}`");
+            var matcher = this.Matcher.BlockMatcher();
+            if (entry.Index >= matcher.StartIndexStorage && entry.Index <= matcher.StartIndexStorage + matcher.LengthStorage)
+                return matcher;
+            else if (entry.Index < matcher.StartIndexStorage)
+                return matcher.Encompass(SequenceMatcherEncompassDirection.Before, matcher.StartIndexStorage - entry.Index);
+            else
+                return matcher.Encompass(SequenceMatcherEncompassDirection.After, entry.Index - matcher.StartIndexStorage);
         }
     }
 
