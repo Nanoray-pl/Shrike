@@ -2,7 +2,8 @@
 
 # Release notes
 
-## Upcoming release
+## 3.1.0
+Released 9 March 2024.
 
 * Added `ElementMatch.Element` and `ElementMatch.SelectElement` extensions.
 * `ISequenceMatcher.EncompassUntil` now keeps underlying `ElementMatch`/`Find` delegate results properly (#1).
