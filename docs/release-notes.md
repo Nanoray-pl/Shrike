@@ -2,6 +2,10 @@
 
 # Release notes
 
+## Upcoming release
+
+* Added `ElementMatch.Element` and `ElementMatch.SelectElement` extensions.
+
 ## 3.0.0
 Released 19 December 2023.
 
