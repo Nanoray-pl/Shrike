@@ -214,11 +214,11 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
             _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
         };
 
-        var findMatcher = self.Find(findOccurence, findBounds, toFind);
+        var newMatcher = self.Find(findOccurence, findBounds, toFind);
         return direction switch
         {
-            SequenceMatcherPastBoundsDirection.Before => matcher.Copy(startIndex: findMatcher.StartIndex(), length: matcher.EndIndex() - findMatcher.StartIndex()),
-            SequenceMatcherPastBoundsDirection.After => matcher.Copy(startIndex: matcher.StartIndex(), length: findMatcher.EndIndex() - matcher.StartIndex()),
+            SequenceMatcherPastBoundsDirection.Before => newMatcher.Encompass(SequenceMatcherEncompassDirection.After, matcher.StartIndex() - newMatcher.EndIndex() + matcher.Length()),
+            SequenceMatcherPastBoundsDirection.After => newMatcher.Encompass(SequenceMatcherEncompassDirection.Before, newMatcher.StartIndex() - matcher.EndIndex() + matcher.Length()),
             _ => throw new ArgumentException($"{nameof(SequenceMatcherPastBoundsDirection)} has an invalid value."),
         };
     }
