@@ -102,6 +102,33 @@ public static class CodeInstructionSequencePointerMatcherExt
     }
 
     /// <summary>
+    /// Tries to retrieve an index of a local variable referenced by an instruction.
+    /// </summary>
+    /// <param name="self">The current matcher.</param>
+    /// <param name="localIndex">The retrieved local variable index, or <c>null</c>.</param>
+    /// <returns>The current matcher.</returns>
+    public static SequencePointerMatcher<CodeInstruction> TryGetLocalIndex(this SequencePointerMatcher<CodeInstruction> self, out int? localIndex)
+    {
+        localIndex = null;
+        if (self.Element().TryGetLocalIndex(out int elementLocalIndex))
+            localIndex = elementLocalIndex;
+        return self;
+    }
+
+    /// <summary>
+    /// Retrieves an index of a local variable referenced by an instruction.
+    /// </summary>
+    /// <param name="self">The current matcher.</param>
+    /// <param name="localIndex">The retrieved local variable index.</param>
+    /// <returns>The current matcher.</returns>
+    public static SequencePointerMatcher<CodeInstruction> GetLocalIndex(this SequencePointerMatcher<CodeInstruction> self, out int localIndex)
+    {
+        if (!self.Element().TryGetLocalIndex(out localIndex))
+            throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
+        return self;
+    }
+
+    /// <summary>
     /// Tries to create an <c>ldloc</c> instruction referencing the same local variable the current instruction does.
     /// </summary>
     /// <param name="self">The current matcher.</param>
@@ -109,18 +136,17 @@ public static class CodeInstructionSequencePointerMatcherExt
     /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> TryCreateLdlocInstruction(this SequencePointerMatcher<CodeInstruction> self, out CodeInstruction? instruction)
     {
-        if (self.Element().opcode == OpCodes.Ldloc_0 || self.Element().opcode == OpCodes.Stloc_0)
-            instruction = new CodeInstruction(OpCodes.Ldloc_0);
-        else if (self.Element().opcode == OpCodes.Ldloc_1 || self.Element().opcode == OpCodes.Stloc_1)
-            instruction = new CodeInstruction(OpCodes.Ldloc_1);
-        else if (self.Element().opcode == OpCodes.Ldloc_2 || self.Element().opcode == OpCodes.Stloc_2)
-            instruction = new CodeInstruction(OpCodes.Ldloc_2);
-        else if (self.Element().opcode == OpCodes.Ldloc_3 || self.Element().opcode == OpCodes.Stloc_3)
-            instruction = new CodeInstruction(OpCodes.Ldloc_3);
-        else if (self.Element().opcode == OpCodes.Ldloc || self.Element().opcode == OpCodes.Stloc || self.Element().opcode == OpCodes.Ldloc_S || self.Element().opcode == OpCodes.Stloc_S || self.Element().opcode == OpCodes.Ldloca || self.Element().opcode == OpCodes.Ldloca_S)
-            instruction = new CodeInstruction(OpCodes.Ldloc, ILMatches.ExtractLocalIndex(self.Element().operand)!.Value);
-        else
-            instruction = null;
+        instruction = null;
+        if (self.Element().TryGetLocalIndex(out int localIndex))
+            instruction = localIndex switch
+            {
+                0 => new CodeInstruction(OpCodes.Ldloc_0),
+                1 => new CodeInstruction(OpCodes.Ldloc_1),
+                2 => new CodeInstruction(OpCodes.Ldloc_2),
+                3 => new CodeInstruction(OpCodes.Ldloc_3),
+                _ => new CodeInstruction(OpCodes.Ldloc, localIndex)
+            };
+
         return self;
     }
 
@@ -147,18 +173,17 @@ public static class CodeInstructionSequencePointerMatcherExt
     /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> TryCreateStlocInstruction(this SequencePointerMatcher<CodeInstruction> self, out CodeInstruction? instruction)
     {
-        if (self.Element().opcode == OpCodes.Ldloc_0 || self.Element().opcode == OpCodes.Stloc_0)
-            instruction = new CodeInstruction(OpCodes.Stloc_0);
-        else if (self.Element().opcode == OpCodes.Ldloc_1 || self.Element().opcode == OpCodes.Stloc_1)
-            instruction = new CodeInstruction(OpCodes.Stloc_1);
-        else if (self.Element().opcode == OpCodes.Ldloc_2 || self.Element().opcode == OpCodes.Stloc_2)
-            instruction = new CodeInstruction(OpCodes.Stloc_2);
-        else if (self.Element().opcode == OpCodes.Ldloc_3 || self.Element().opcode == OpCodes.Stloc_3)
-            instruction = new CodeInstruction(OpCodes.Stloc_3);
-        else if (self.Element().opcode == OpCodes.Ldloc || self.Element().opcode == OpCodes.Stloc || self.Element().opcode == OpCodes.Ldloc_S || self.Element().opcode == OpCodes.Stloc_S || self.Element().opcode == OpCodes.Ldloca || self.Element().opcode == OpCodes.Ldloca_S)
-            instruction = new CodeInstruction(OpCodes.Stloc, ILMatches.ExtractLocalIndex(self.Element().operand)!.Value);
-        else
-            instruction = null;
+        instruction = null;
+        if (self.Element().TryGetLocalIndex(out int localIndex))
+            instruction = localIndex switch
+            {
+                0 => new CodeInstruction(OpCodes.Stloc_0),
+                1 => new CodeInstruction(OpCodes.Stloc_1),
+                2 => new CodeInstruction(OpCodes.Stloc_2),
+                3 => new CodeInstruction(OpCodes.Stloc_3),
+                _ => new CodeInstruction(OpCodes.Stloc, localIndex)
+            };
+
         return self;
     }
 
@@ -185,18 +210,10 @@ public static class CodeInstructionSequencePointerMatcherExt
     /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> TryCreateLdlocaInstruction(this SequencePointerMatcher<CodeInstruction> self, out CodeInstruction? instruction)
     {
-        if (self.Element().opcode == OpCodes.Ldloc_0 || self.Element().opcode == OpCodes.Stloc_0)
-            instruction = new CodeInstruction(OpCodes.Ldloca, 0);
-        else if (self.Element().opcode == OpCodes.Ldloc_1 || self.Element().opcode == OpCodes.Stloc_1)
-            instruction = new CodeInstruction(OpCodes.Ldloca, 1);
-        else if (self.Element().opcode == OpCodes.Ldloc_2 || self.Element().opcode == OpCodes.Stloc_2)
-            instruction = new CodeInstruction(OpCodes.Ldloca, 2);
-        else if (self.Element().opcode == OpCodes.Ldloc_3 || self.Element().opcode == OpCodes.Stloc_3)
-            instruction = new CodeInstruction(OpCodes.Ldloca, 3);
-        else if (self.Element().opcode == OpCodes.Ldloc || self.Element().opcode == OpCodes.Stloc || self.Element().opcode == OpCodes.Ldloc_S || self.Element().opcode == OpCodes.Stloc_S || self.Element().opcode == OpCodes.Ldloca || self.Element().opcode == OpCodes.Ldloca_S)
-            instruction = new CodeInstruction(OpCodes.Ldloca, ILMatches.ExtractLocalIndex(self.Element().operand)!.Value);
-        else
-            instruction = null;
+        instruction = null;
+        if (self.Element().TryGetLocalIndex(out int localIndex))
+            instruction = new CodeInstruction(OpCodes.Ldloca, localIndex);
+
         return self;
     }
 

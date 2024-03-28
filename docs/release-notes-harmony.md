@@ -4,6 +4,7 @@
 
 ## Upcoming release
 
+* Added methods to retrieve indexes of referenced local variables.
 * Improved some XML docs.
 
 ## 3.0.0

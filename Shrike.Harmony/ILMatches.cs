@@ -264,7 +264,7 @@ public static class ILMatches
     /// </summary>
     /// <param name="index">The index.</param>
     public static ElementMatch<CodeInstruction> Ldloc(int index)
-        => new($"{{ldloc(.s) {index}}}", i => AnyLdloc.Matches(i) && ExtractLocalIndex(i) == index);
+        => new($"{{ldloc(.s) {index}}}", i => AnyLdloc.Matches(i) && i.TryGetLocalIndex(out int localIndex) && localIndex == index);
 
     /// <summary>
     /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given instruction.
@@ -283,18 +283,13 @@ public static class ILMatches
         {
             if (!AnyLdloc.Matches(i))
                 return false;
+
             if (i.operand is LocalBuilder local)
-            {
                 return local.LocalType == type;
-            }
+            else if (i.TryGetLocalIndex(out int localIndex))
+                return locals.FirstOrDefault(l => l.LocalIndex == localIndex) is { } providedLocal && providedLocal.LocalType == type;
             else
-            {
-                int? localIndex = ExtractLocalIndex(i);
-                if (localIndex is null)
-                    return false;
-                var providedLocal = locals.FirstOrDefault(l => l.LocalIndex == localIndex.Value);
-                return providedLocal is not null && providedLocal.LocalType == type;
-            }
+                return false;
         });
 
     /// <summary>
@@ -326,7 +321,7 @@ public static class ILMatches
     /// </summary>
     /// <param name="index">The index.</param>
     public static ElementMatch<CodeInstruction> Stloc(int index)
-        => new($"{{stloc(.s) {index}}}", i => AnyStloc.Matches(i) && ExtractLocalIndex(i) == index);
+        => new($"{{stloc(.s) {index}}}", i => AnyStloc.Matches(i) && i.TryGetLocalIndex(out int localIndex) && localIndex == index);
 
     /// <summary>
     /// Matches an <c>stloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given instruction.
@@ -345,18 +340,13 @@ public static class ILMatches
         {
             if (!AnyStloc.Matches(i))
                 return false;
+
             if (i.operand is LocalBuilder local)
-            {
                 return local.LocalType == type;
-            }
+            else if (i.TryGetLocalIndex(out int localIndex))
+                return locals.FirstOrDefault(l => l.LocalIndex == localIndex) is { } providedLocal && providedLocal.LocalType == type;
             else
-            {
-                int? localIndex = ExtractLocalIndex(i);
-                if (localIndex is null)
-                    return false;
-                var providedLocal = locals.FirstOrDefault(l => l.LocalIndex == localIndex.Value);
-                return providedLocal is not null && providedLocal.LocalType == type;
-            }
+                return false;
         });
 
     /// <summary>
@@ -388,7 +378,7 @@ public static class ILMatches
     /// </summary>
     /// <param name="index">The index.</param>
     public static ElementMatch<CodeInstruction> Ldloca(int index)
-        => new($"{{ldloc.a(.s) {index}}}", i => AnyLdloca.Matches(i) && ExtractLocalIndex(i) == index);
+        => new($"{{ldloc.a(.s) {index}}}", i => AnyLdloca.Matches(i) && i.TryGetLocalIndex(out int localIndex) && localIndex == index);
 
     /// <summary>
     /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given instruction.
@@ -407,18 +397,13 @@ public static class ILMatches
         {
             if (!AnyLdloca.Matches(i))
                 return false;
+
             if (i.operand is LocalBuilder local)
-            {
                 return local.LocalType == type;
-            }
+            else if (i.TryGetLocalIndex(out int localIndex))
+                return locals.FirstOrDefault(l => l.LocalIndex == localIndex) is { } providedLocal && providedLocal.LocalType == type;
             else
-            {
-                int? localIndex = ExtractLocalIndex(i);
-                if (localIndex is null)
-                    return false;
-                var providedLocal = locals.FirstOrDefault(l => l.LocalIndex == localIndex.Value);
-                return providedLocal is not null && providedLocal.LocalType == type;
-            }
+                return false;
         });
 
     /// <summary>
@@ -639,33 +624,5 @@ public static class ILMatches
                     return false;
             return true;
         });
-    }
-
-    internal static int? ExtractLocalIndex(CodeInstruction instruction)
-    {
-        if (instruction.opcode == OpCodes.Ldloc_0 || instruction.opcode == OpCodes.Stloc_0)
-            return 0;
-        else if (instruction.opcode == OpCodes.Ldloc_1 || instruction.opcode == OpCodes.Stloc_1)
-            return 1;
-        else if (instruction.opcode == OpCodes.Ldloc_2 || instruction.opcode == OpCodes.Stloc_2)
-            return 2;
-        else if (instruction.opcode == OpCodes.Ldloc_3 || instruction.opcode == OpCodes.Stloc_3)
-            return 3;
-        else if (instruction.opcode == OpCodes.Ldloc || instruction.opcode == OpCodes.Ldloc_S || instruction.opcode == OpCodes.Ldloca || instruction.opcode == OpCodes.Ldloca_S)
-            return ExtractLocalIndex(instruction.operand);
-        else
-            return null;
-    }
-
-    internal static int? ExtractLocalIndex(object? operand)
-    {
-        if (operand is LocalBuilder local)
-            return local.LocalIndex;
-        else if (operand is int @int)
-            return @int;
-        else if (operand is sbyte @sbyte)
-            return @sbyte;
-        else
-            return null;
     }
 }

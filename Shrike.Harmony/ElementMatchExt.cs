@@ -192,4 +192,40 @@ public static class ElementMatchExt
             return matcher;
         });
     }
+
+    /// <summary>
+    /// Tries to retrieve an index of a local variable referenced by the found instruction.
+    /// </summary>
+    /// <param name="self">The match.</param>
+    /// <param name="localIndexReference">A reference where the retrieved local variable index will be stored.</param>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
+    public static ElementMatch<CodeInstruction> TryGetLocalIndex(this ElementMatch<CodeInstruction> self, out NullableStructRef<int> localIndexReference)
+    {
+        NullableStructRef<int> reference = new();
+        localIndexReference = reference;
+        return self.WithDelegate((matcher, index, element) =>
+        {
+            matcher.MakePointerMatcher(index).TryGetLocalIndex(out int? localIndex);
+            reference.Value = localIndex;
+            return matcher;
+        });
+    }
+
+    /// <summary>
+    /// Retrieves an index of a local variable referenced by the found instruction.
+    /// </summary>
+    /// <param name="self">The match.</param>
+    /// <param name="localIndexReference">A reference where the retrieved local variable index will be stored.</param>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
+    public static ElementMatch<CodeInstruction> GetLocalIndex(this ElementMatch<CodeInstruction> self, out StructRef<int> localIndexReference)
+    {
+        StructRef<int> reference = new(default);
+        localIndexReference = reference;
+        return self.WithDelegate((matcher, index, element) =>
+        {
+            matcher.MakePointerMatcher(index).GetLocalIndex(out int localIndex);
+            reference.Value = localIndex;
+            return matcher;
+        });
+    }
 }
