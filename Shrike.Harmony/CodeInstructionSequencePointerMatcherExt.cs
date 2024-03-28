@@ -75,7 +75,7 @@ public static class CodeInstructionSequencePointerMatcherExt
     /// Tries to retrieve a branch instruction target label.
     /// </summary>
     /// <param name="self">The current matcher.</param>
-    /// <param name="label">The extracted label, or <c>null</c>.</param>
+    /// <param name="label">The retrieved label, or <c>null</c>.</param>
     /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> TryGetBranchTarget(this SequencePointerMatcher<CodeInstruction> self, out Label? label)
     {
@@ -90,7 +90,7 @@ public static class CodeInstructionSequencePointerMatcherExt
     /// Retrieves a branch instruction target label.
     /// </summary>
     /// <param name="self">The current matcher.</param>
-    /// <param name="label">The extracted label.</param>
+    /// <param name="label">The retrieved label.</param>
     /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> GetBranchTarget(this SequencePointerMatcher<CodeInstruction> self, out Label label)
     {

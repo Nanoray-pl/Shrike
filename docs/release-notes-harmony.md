@@ -2,6 +2,10 @@
 
 # Release notes
 
+## Upcoming release
+
+* Improved some XML docs.
+
 ## 3.0.0
 Released 19 December 2023.
 
