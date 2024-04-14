@@ -2,7 +2,8 @@
 
 # Release notes
 
-## Upcoming release
+## 3.1.0
+Released 14 April 2024.
 
 * Added methods to retrieve indexes of referenced local variables.
 * Improved some XML docs.
