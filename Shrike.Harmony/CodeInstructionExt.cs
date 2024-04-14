@@ -36,7 +36,7 @@ public static class CodeInstructionExt
             localIndex = 3;
             return true;
         }
-        if (instruction.opcode == OpCodes.Ldloc || instruction.opcode == OpCodes.Ldloc_S || instruction.opcode == OpCodes.Ldloca || instruction.opcode == OpCodes.Ldloca_S)
+        if (instruction.opcode == OpCodes.Ldloc || instruction.opcode == OpCodes.Ldloc_S || instruction.opcode == OpCodes.Ldloca || instruction.opcode == OpCodes.Ldloca_S || instruction.opcode == OpCodes.Stloc || instruction.opcode == OpCodes.Stloc_S)
             return TryGetOperandLocalIndex(instruction.operand, out localIndex);
 
         localIndex = default;
