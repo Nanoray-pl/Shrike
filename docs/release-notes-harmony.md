@@ -2,6 +2,11 @@
 
 # Release notes
 
+## 3.1.1
+Released 14 April 2024.
+
+* Fixed `TryGetLocalIndex` behavior for `stloc(.s)` instructions.
+
 ## 3.1.0
 Released 14 April 2024.
 
