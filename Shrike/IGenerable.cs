@@ -5,7 +5,7 @@ namespace Nanoray.Shrike;
 /// Represents a type which has the ability to generate its own values.
 /// </summary>
 /// <typeparam name="T">The type of elements.</typeparam>
-public interface IGenerable<T> where T : IGenerable<T>
+public interface IGenerable<out T> where T : IGenerable<T>
 {
     /// <summary>
     /// Generates a value.

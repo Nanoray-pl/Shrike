@@ -94,7 +94,7 @@ public readonly struct SequencePointerMatcher<TElement> : ISequenceMatcher<Seque
     /// <param name="element">The transformed element.</param>
     /// <param name="transformation">The transformation to run.</param>
     /// <returns>An unchanged pointer matcher.</returns>
-    SequencePointerMatcher<TElement> SelectElement<TResult>(out TResult element, Func<TElement, TResult> transformation)
+    public SequencePointerMatcher<TElement> SelectElement<TResult>(out TResult element, Func<TElement, TResult> transformation)
     {
         element = transformation(this.Element());
         return this;

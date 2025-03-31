@@ -225,7 +225,7 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
 
     public static SequencePointerMatcher<TElement> Find(ISequenceMatcher<TElement> self, ElementMatch<TElement> toFind)
     {
-        var findMatcher = self.Find(new ElementMatch<TElement>[] { toFind });
+        var findMatcher = self.Find(new[] { toFind });
         return findMatcher.PointerMatcher(SequenceMatcherRelativeElement.First);
     }
 
@@ -241,7 +241,7 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
 
     public static SequencePointerMatcher<TElement> Find(ISequenceMatcher<TElement> self, SequenceBlockMatcherFindOccurence occurence, SequenceMatcherRelativeBounds bounds, ElementMatch<TElement> toFind)
     {
-        var findMatcher = self.Find(occurence, bounds, new ElementMatch<TElement>[] { toFind });
+        var findMatcher = self.Find(occurence, bounds, new[] { toFind });
         return findMatcher.PointerMatcher(SequenceMatcherRelativeElement.First);
     }
 
@@ -251,15 +251,6 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
         var findBoundsMatcher = self.BlockMatcher(bounds);
         int startIndex = findBoundsMatcher.StartIndex();
         int endIndex = findBoundsMatcher.EndIndex();
-
-        SequenceBlockMatcher<TElement> MakeFinalMatcher(int startIndex, int length)
-        {
-            var matcher = self.BlockMatcher().Copy(startIndex: startIndex, length: toFind.Count);
-            for (int i = 0; i < toFind.Count; i++)
-                foreach (var @delegate in toFind[i].Delegates)
-                    matcher = @delegate(matcher, startIndex + i, allElements[startIndex + i]);
-            return matcher;
-        }
 
         switch (occurence)
         {
@@ -273,7 +264,7 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
                             if (!toFind[toFindIndex].Matches(allElements[index + toFindIndex]))
                                 goto continueOuter;
                         }
-                        return MakeFinalMatcher(index, toFind.Count);
+                        return MakeFinalMatcher(index);
                     continueOuter:;
                     }
                     break;
@@ -288,7 +279,7 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
                             if (!toFind[toFindIndex].Matches(allElements[index + toFindIndex - toFind.Count + 1]))
                                 goto continueOuter;
                         }
-                        return MakeFinalMatcher(index - toFind.Count + 1, toFind.Count);
+                        return MakeFinalMatcher(index - toFind.Count + 1);
                     continueOuter:;
                     }
                     break;
@@ -297,5 +288,14 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
                 throw new ArgumentException($"{nameof(SequenceBlockMatcherFindOccurence)} has an invalid value.");
         }
         throw new SequenceMatcherException($"Pattern not found:\n{string.Join("\n", toFind.Select(i => $"\t{i.Description}"))}");
+
+        SequenceBlockMatcher<TElement> MakeFinalMatcher(int startIndex)
+        {
+            var matcher = self.BlockMatcher().Copy(startIndex: startIndex, length: toFind.Count);
+            for (int i = 0; i < toFind.Count; i++)
+                foreach (var @delegate in toFind[i].Delegates)
+                    matcher = @delegate(matcher, startIndex + i, allElements[startIndex + i]);
+            return matcher;
+        }
     }
 }

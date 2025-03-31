@@ -16,7 +16,7 @@ public static class SequenceAnchors
     /// <param name="anchor">The anchor to use.</param>
     /// <returns>A new match with a <c>Find</c> delegate that will anchor this element.</returns>
     public static ElementMatch<TElement> Anchor<TElement, TAnchor>(this ElementMatch<TElement> self, TAnchor anchor)
-        => self.WithDelegate((matcher, index, element) => matcher.WithPointerAttachedData(index, new AnchorInfo<TAnchor> { Anchor = anchor }));
+        => self.WithDelegate((matcher, index, _) => matcher.WithPointerAttachedData(index, new AnchorInfo<TAnchor> { Anchor = anchor }));
 
     /// <summary>
     /// Anchor the element when it is found.

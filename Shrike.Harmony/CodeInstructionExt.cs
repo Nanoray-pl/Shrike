@@ -39,29 +39,26 @@ public static class CodeInstructionExt
         if (instruction.opcode == OpCodes.Ldloc || instruction.opcode == OpCodes.Ldloc_S || instruction.opcode == OpCodes.Ldloca || instruction.opcode == OpCodes.Ldloca_S || instruction.opcode == OpCodes.Stloc || instruction.opcode == OpCodes.Stloc_S)
             return TryGetOperandLocalIndex(instruction.operand, out localIndex);
 
-        localIndex = default;
+        localIndex = 0;
         return false;
     }
 
     private static bool TryGetOperandLocalIndex(object? operand, out int localIndex)
     {
-        if (operand is LocalBuilder local)
+        switch (operand)
         {
-            localIndex = local.LocalIndex;
-            return true;
+            case LocalBuilder local:
+                localIndex = local.LocalIndex;
+                return true;
+            case int @int:
+                localIndex = @int;
+                return true;
+            case sbyte @sbyte:
+                localIndex = @sbyte;
+                return true;
+            default:
+                localIndex = 0;
+                return false;
         }
-        if (operand is int @int)
-        {
-            localIndex = @int;
-            return true;
-        }
-        if (operand is sbyte @sbyte)
-        {
-            localIndex = @sbyte;
-            return true;
-        }
-
-        localIndex = default;
-        return false;
     }
 }

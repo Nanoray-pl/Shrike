@@ -159,9 +159,7 @@ public static class CodeInstructionSequencePointerMatcherExt
     public static SequencePointerMatcher<CodeInstruction> CreateLdlocInstruction(this SequencePointerMatcher<CodeInstruction> self, out CodeInstruction instruction)
     {
         self.TryCreateLdlocInstruction(out var tryInstruction);
-        if (tryInstruction is null)
-            throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
-        instruction = tryInstruction;
+        instruction = tryInstruction ?? throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
         return self;
     }
 
@@ -196,9 +194,7 @@ public static class CodeInstructionSequencePointerMatcherExt
     public static SequencePointerMatcher<CodeInstruction> CreateStlocInstruction(this SequencePointerMatcher<CodeInstruction> self, out CodeInstruction instruction)
     {
         self.TryCreateStlocInstruction(out var tryInstruction);
-        if (tryInstruction is null)
-            throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
-        instruction = tryInstruction;
+        instruction = tryInstruction ?? throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
         return self;
     }
 
@@ -226,9 +222,7 @@ public static class CodeInstructionSequencePointerMatcherExt
     public static SequencePointerMatcher<CodeInstruction> CreateLdlocaInstruction(this SequencePointerMatcher<CodeInstruction> self, out CodeInstruction instruction)
     {
         self.TryCreateLdlocaInstruction(out var tryInstruction);
-        if (tryInstruction is null)
-            throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
-        instruction = tryInstruction;
+        instruction = tryInstruction ?? throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
         return self;
     }
 }

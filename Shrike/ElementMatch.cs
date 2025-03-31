@@ -61,10 +61,5 @@ public readonly struct ElementMatch<TElement>
     /// <param name="delegate"></param>
     /// <returns>A new element match with an additional match delegate.</returns>
     public ElementMatch<TElement> WithDelegate(ElementMatchDelegate<TElement> @delegate)
-        => new()
-        {
-            Description = this.Description,
-            Closure = this.Closure,
-            Delegates = this.Delegates.Append(@delegate).ToList()
-        };
+        => this with { Delegates = this.Delegates.Append(@delegate).ToList() };
 }

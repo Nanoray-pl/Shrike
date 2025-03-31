@@ -19,7 +19,7 @@ public static class ElementMatchExt
     {
         NullableObjectRef<CodeInstruction> reference = new();
         instructionReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).TryCreateLdlocInstruction(out var instruction);
             reference.Value = instruction;
@@ -37,7 +37,7 @@ public static class ElementMatchExt
     {
         ObjectRef<CodeInstruction> reference = new(null!);
         instructionReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).CreateLdlocInstruction(out var instruction);
             reference.Value = instruction;
@@ -55,7 +55,7 @@ public static class ElementMatchExt
     {
         NullableObjectRef<CodeInstruction> reference = new();
         instructionReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).TryCreateStlocInstruction(out var instruction);
             reference.Value = instruction;
@@ -73,7 +73,7 @@ public static class ElementMatchExt
     {
         ObjectRef<CodeInstruction> reference = new(null!);
         instructionReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).CreateStlocInstruction(out var instruction);
             reference.Value = instruction;
@@ -91,7 +91,7 @@ public static class ElementMatchExt
     {
         NullableObjectRef<CodeInstruction> reference = new();
         instructionReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).TryCreateLdlocaInstruction(out var instruction);
             reference.Value = instruction;
@@ -109,7 +109,7 @@ public static class ElementMatchExt
     {
         ObjectRef<CodeInstruction> reference = new(null!);
         instructionReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).CreateLdlocaInstruction(out var instruction);
             reference.Value = instruction;
@@ -128,7 +128,7 @@ public static class ElementMatchExt
     {
         var createdLabel = il.DefineLabel();
         label = createdLabel;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             int startIndex = matcher.StartIndex();
             int length = matcher.Length();
@@ -149,7 +149,7 @@ public static class ElementMatchExt
     {
         List<Label> labelsReference = new();
         labels = labelsReference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).ExtractLabels(out var extractedLabels);
             labelsReference.AddRange(extractedLabels);
@@ -167,7 +167,7 @@ public static class ElementMatchExt
     {
         NullableStructRef<Label> reference = new();
         labelReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).TryGetBranchTarget(out var label);
             reference.Value = label;
@@ -185,7 +185,7 @@ public static class ElementMatchExt
     {
         StructRef<Label> reference = new(default);
         labelReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).GetBranchTarget(out var label);
             reference.Value = label;
@@ -203,7 +203,7 @@ public static class ElementMatchExt
     {
         NullableStructRef<int> reference = new();
         localIndexReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).TryGetLocalIndex(out int? localIndex);
             reference.Value = localIndex;
@@ -219,9 +219,9 @@ public static class ElementMatchExt
     /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> GetLocalIndex(this ElementMatch<CodeInstruction> self, out StructRef<int> localIndexReference)
     {
-        StructRef<int> reference = new(default);
+        StructRef<int> reference = 0;
         localIndexReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             matcher.MakePointerMatcher(index).GetLocalIndex(out int localIndex);
             reference.Value = localIndex;

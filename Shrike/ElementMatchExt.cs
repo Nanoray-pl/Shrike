@@ -17,7 +17,7 @@ public static class ElementMatchClassExt
     {
         ObjectRef<TElement> reference = new(null!);
         elementReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             reference.Value = matcher.MakePointerMatcher(index).Element();
             return matcher;
@@ -35,7 +35,7 @@ public static class ElementMatchClassExt
     {
         ObjectRef<TResult> reference = new(null!);
         elementReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             reference.Value = transformation(matcher.MakePointerMatcher(index).Element());
             return matcher;
@@ -58,7 +58,7 @@ public static class ElementMatchStructExt
     {
         StructRef<TElement> reference = new(default);
         elementReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             reference.Value = matcher.MakePointerMatcher(index).Element();
             return matcher;
@@ -76,7 +76,7 @@ public static class ElementMatchStructExt
     {
         StructRef<TResult> reference = new(default);
         elementReference = reference;
-        return self.WithDelegate((matcher, index, element) =>
+        return self.WithDelegate((matcher, index, _) =>
         {
             reference.Value = transformation(matcher.MakePointerMatcher(index).Element());
             return matcher;
