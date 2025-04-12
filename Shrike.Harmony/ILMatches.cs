@@ -271,7 +271,7 @@ public static class ILMatches
     /// </summary>
     /// <param name="instruction">The instruction to match against.</param>
     public static ElementMatch<CodeInstruction> Ldloc(CodeInstruction instruction)
-        => new($"{{ldloc matching {instruction}}}", i => Ldloc(i).Matches(i));
+        => new($"{{ldloc matching {instruction}}}", i => instruction.TryGetLocalIndex(out int localIndex) && Ldloc(localIndex).Matches(i));
 
     /// <summary>
     /// Matches an <c>ldloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given type.
@@ -328,7 +328,7 @@ public static class ILMatches
     /// </summary>
     /// <param name="instruction">The instruction to match against.</param>
     public static ElementMatch<CodeInstruction> Stloc(CodeInstruction instruction)
-        => new($"{{stloc matching {instruction}}}", i => Stloc(i).Matches(i));
+        => new($"{{stloc matching {instruction}}}", i => instruction.TryGetLocalIndex(out int localIndex) && Stloc(localIndex).Matches(i));
 
     /// <summary>
     /// Matches an <c>stloc</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>) instruction matching the given type.

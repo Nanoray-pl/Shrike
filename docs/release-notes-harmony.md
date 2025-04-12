@@ -5,6 +5,7 @@
 ## Upcoming release
 
 * Added `GetSwitchLabel` methods.
+* Fixed `ILMatches.Ldloc(CodeInstruction)` and `ILMatches.Stloc(CodeInstruction)`.
 
 ## 3.1.1
 Released 14 April 2024.
