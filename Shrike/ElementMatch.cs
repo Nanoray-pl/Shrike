@@ -13,7 +13,14 @@ public readonly struct ElementMatch<TElement>
     /// <summary>
     /// An element match matching any element.
     /// </summary>
+    [Obsolete($"Use the `{nameof(Any)}` member instead.")]
     public static ElementMatch<TElement> True
+        => new("<anything>", _ => true);
+
+    /// <summary>
+    /// An element match matching any element.
+    /// </summary>
+    public static ElementMatch<TElement> Any
         => new("<anything>", _ => true);
 
     /// <summary>

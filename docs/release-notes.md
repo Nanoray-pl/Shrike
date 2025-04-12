@@ -2,6 +2,10 @@
 
 # Release notes
 
+## Upcoming release
+
+* Deprecated `ElementMatch.True` in favor of `ElementMatch.Any`.
+
 ## 3.1.0
 Released 9 March 2024.
 
