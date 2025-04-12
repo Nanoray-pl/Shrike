@@ -228,4 +228,16 @@ public static class ElementMatchExt
             return matcher;
         });
     }
+
+    public static ElementMatch<CodeInstruction> GetSwitchLabel(this ElementMatch<CodeInstruction> self, int index, out StructRef<Label> labelReference)
+    {
+        StructRef<Label> reference = new(default);
+        labelReference = reference;
+        return self.WithDelegate((matcher, elementIndex, _) =>
+        {
+            matcher.MakePointerMatcher(elementIndex).GetSwitchLabel(index, out var label);
+            reference.Value = label;
+            return matcher;
+        });
+    }
 }

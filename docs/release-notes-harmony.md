@@ -2,6 +2,10 @@
 
 # Release notes
 
+## Upcoming release
+
+* Added `GetSwitchLabel` methods.
+
 ## 3.1.1
 Released 14 April 2024.
 

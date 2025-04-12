@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -79,10 +80,7 @@ public static class CodeInstructionSequencePointerMatcherExt
     /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> TryGetBranchTarget(this SequencePointerMatcher<CodeInstruction> self, out Label? label)
     {
-        if (ILMatches.AnyBranch.Matches(self.Element()))
-            label = (Label)self.Element().operand;
-        else
-            label = null;
+        label = ILMatches.AnyBranch.Matches(self.Element()) ? (Label)self.Element().operand : null;
         return self;
     }
 
@@ -94,10 +92,9 @@ public static class CodeInstructionSequencePointerMatcherExt
     /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> GetBranchTarget(this SequencePointerMatcher<CodeInstruction> self, out Label label)
     {
-        if (ILMatches.AnyBranch.Matches(self.Element()))
-            label = (Label)self.Element().operand;
-        else
+        if (!ILMatches.AnyBranch.Matches(self.Element()))
             throw new SequenceMatcherException($"{self.Element()} is not a branch instruction.");
+        label = (Label)self.Element().operand;
         return self;
     }
 
@@ -127,6 +124,17 @@ public static class CodeInstructionSequencePointerMatcherExt
             throw new SequenceMatcherException($"{self.Element()} is not a local instruction.");
         return self;
     }
+
+    public static SequencePointerMatcher<CodeInstruction> GetSwitchLabel(this SequencePointerMatcher<CodeInstruction> self, int index, out Label label)
+    {
+        if (self.Element().opcode != OpCodes.Switch)
+            throw new SequenceMatcherException($"{self.Element()} is not a branch instruction.");
+        label = ((Label[])self.Element().operand)[index];
+        return self;
+    }
+
+    public static SequencePointerMatcher<CodeInstruction> GetSwitchLabel<TEnum>(this SequencePointerMatcher<CodeInstruction> self, TEnum @enum, out Label label) where TEnum : struct, Enum
+        => self.GetSwitchLabel(Convert.ToInt32(@enum), out label);
 
     /// <summary>
     /// Tries to create an <c>ldloc</c> instruction referencing the same local variable the current instruction does.
