@@ -4,6 +4,7 @@
 
 ## Upcoming release
 
+* Updated Harmony to 2.3.5.
 * Added `GetSwitchLabel` methods.
 * Added `ILMatches.LdcI4<TEnum>`.
 * Added `ElementMatch<CodeInstruction>.SameLocal`.
