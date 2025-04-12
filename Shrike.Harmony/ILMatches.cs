@@ -239,6 +239,14 @@ public static class ILMatches
         });
 
     /// <summary>
+    /// Matches an <c>ldc.i4</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>/<c>.4</c>/<c>.5</c>/<c>.6</c>/<c>.7</c>/<c>.8</c>/<c>.m1</c>) instruction with a given enum value, which will be converted to <see cref="int"/>.
+    /// </summary>
+    /// <typeparam name="TEnum"></typeparam>
+    /// <param name="enum">The value.</param>
+    public static ElementMatch<CodeInstruction> LdcI4<TEnum>(TEnum @enum) where TEnum : struct, Enum
+        => LdcI4(Convert.ToInt32(@enum));
+
+    /// <summary>
     /// Matches an <c>ldc.r4</c> instruction with a given value.
     /// </summary>
     /// <param name="value">The value.</param>
@@ -286,10 +294,9 @@ public static class ILMatches
 
             if (i.operand is LocalBuilder local)
                 return local.LocalType == type;
-            else if (i.TryGetLocalIndex(out int localIndex))
+            if (i.TryGetLocalIndex(out int localIndex))
                 return locals.FirstOrDefault(l => l.LocalIndex == localIndex) is { } providedLocal && providedLocal.LocalType == type;
-            else
-                return false;
+            return false;
         });
 
     /// <summary>
@@ -343,10 +350,9 @@ public static class ILMatches
 
             if (i.operand is LocalBuilder local)
                 return local.LocalType == type;
-            else if (i.TryGetLocalIndex(out int localIndex))
+            if (i.TryGetLocalIndex(out int localIndex))
                 return locals.FirstOrDefault(l => l.LocalIndex == localIndex) is { } providedLocal && providedLocal.LocalType == type;
-            else
-                return false;
+            return false;
         });
 
     /// <summary>
@@ -400,10 +406,9 @@ public static class ILMatches
 
             if (i.operand is LocalBuilder local)
                 return local.LocalType == type;
-            else if (i.TryGetLocalIndex(out int localIndex))
+            if (i.TryGetLocalIndex(out int localIndex))
                 return locals.FirstOrDefault(l => l.LocalIndex == localIndex) is { } providedLocal && providedLocal.LocalType == type;
-            else
-                return false;
+            return false;
         });
 
     /// <summary>
