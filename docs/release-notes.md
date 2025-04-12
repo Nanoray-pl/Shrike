@@ -2,7 +2,8 @@
 
 # Release notes
 
-## Upcoming release
+## 3.2.0
+Released 13 April 2025.
 
 * Added `SetupDelegates` and `Postconditions` to `ElementMatch`.
 * Deprecated `ElementMatch.True` in favor of `ElementMatch.Any`.
