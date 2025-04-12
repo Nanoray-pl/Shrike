@@ -25,7 +25,7 @@ namespace Nanoray.Shrike.Tests
             Assert.AreEqual(1, matcher.StartIndex());
             Assert.AreEqual(1, matcher.EndIndex());
             Assert.AreEqual(0, matcher.Length());
-            CollectionAssert.AreEqual(new string[] { "lorem ipsum dolor sit amet", "the pipe began to rust while new" }, matcher.AllElements());
+            CollectionAssert.AreEqual(new[] { "lorem ipsum dolor sit amet", "the pipe began to rust while new" }, matcher.AllElements());
             CollectionAssert.AreEqual(Array.Empty<string>(), matcher.Elements());
         }
 
@@ -43,8 +43,8 @@ namespace Nanoray.Shrike.Tests
             Assert.AreEqual(4, matcher.StartIndex());
             Assert.AreEqual(6, matcher.EndIndex());
             Assert.AreEqual(2, matcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "1", "2", "f" }, matcher.AllElements());
-            CollectionAssert.AreEqual(new string[] { "1", "2" }, matcher.Elements());
+            CollectionAssert.AreEqual(new[] { "a", "b", "c", "d", "1", "2", "f" }, matcher.AllElements());
+            CollectionAssert.AreEqual(new[] { "1", "2" }, matcher.Elements());
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Nanoray.Shrike.Tests
             Assert.AreEqual(5, matcher.StartIndex());
             Assert.AreEqual(5, matcher.EndIndex());
             Assert.AreEqual(0, matcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "bb", "ccc", "dd", "e", "iiiii", "jjjj", "kkk", "ll", "m", "nn", "ooo", "pp", "q" }, matcher.AllElements());
+            CollectionAssert.AreEqual(new[] { "a", "bb", "ccc", "dd", "e", "iiiii", "jjjj", "kkk", "ll", "m", "nn", "ooo", "pp", "q" }, matcher.AllElements());
             CollectionAssert.AreEqual(Array.Empty<string>(), matcher.Elements());
         }
     }

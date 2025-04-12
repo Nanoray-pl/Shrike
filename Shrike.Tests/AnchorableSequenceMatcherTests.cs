@@ -85,16 +85,16 @@ namespace Nanoray.Shrike.Tests
             Assert.AreEqual(0, testedMatcher.StartIndex());
             Assert.AreEqual(2, testedMatcher.EndIndex());
             Assert.AreEqual(2, testedMatcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "e" }, testedMatcher.AllElements());
-            CollectionAssert.AreEqual(new string[] { "a", "b" }, testedMatcher.Elements());
+            CollectionAssert.AreEqual(new[] { "a", "b", "c", "d", "e" }, testedMatcher.AllElements());
+            CollectionAssert.AreEqual(new[] { "a", "b" }, testedMatcher.Elements());
 
             testedMatcher = blockMatcher.Anchors().BlockMatcher(endAnchor);
 
             Assert.AreEqual(3, testedMatcher.StartIndex());
             Assert.AreEqual(5, testedMatcher.EndIndex());
             Assert.AreEqual(2, testedMatcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "b", "c", "d", "e" }, testedMatcher.AllElements());
-            CollectionAssert.AreEqual(new string[] { "d", "e" }, testedMatcher.Elements());
+            CollectionAssert.AreEqual(new[] { "a", "b", "c", "d", "e" }, testedMatcher.AllElements());
+            CollectionAssert.AreEqual(new[] { "d", "e" }, testedMatcher.Elements());
         }
 
         [Test]
@@ -125,16 +125,16 @@ namespace Nanoray.Shrike.Tests
             Assert.AreEqual(0, testedMatcher.StartIndex());
             Assert.AreEqual(2, testedMatcher.EndIndex());
             Assert.AreEqual(2, testedMatcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "b", "c", "f", "g", "h" }, testedMatcher.AllElements());
-            CollectionAssert.AreEqual(new string[] { "a", "b" }, testedMatcher.Elements());
+            CollectionAssert.AreEqual(new[] { "a", "b", "c", "f", "g", "h" }, testedMatcher.AllElements());
+            CollectionAssert.AreEqual(new[] { "a", "b" }, testedMatcher.Elements());
 
             testedMatcher = blockMatcher.Anchors().BlockMatcher(endAnchor);
 
             Assert.AreEqual(4, testedMatcher.StartIndex());
             Assert.AreEqual(6, testedMatcher.EndIndex());
             Assert.AreEqual(2, testedMatcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "b", "c", "f", "g", "h" }, testedMatcher.AllElements());
-            CollectionAssert.AreEqual(new string[] { "g", "h" }, testedMatcher.Elements());
+            CollectionAssert.AreEqual(new[] { "a", "b", "c", "f", "g", "h" }, testedMatcher.AllElements());
+            CollectionAssert.AreEqual(new[] { "g", "h" }, testedMatcher.Elements());
 
             Assert.Throws<SequenceMatcherException>(() => _ = blockMatcher.Anchors().BlockMatcher(middleAnchor));
         }
@@ -155,8 +155,8 @@ namespace Nanoray.Shrike.Tests
             Assert.AreEqual(1, blockMatcher.StartIndex());
             Assert.AreEqual(3, blockMatcher.EndIndex());
             Assert.AreEqual(2, blockMatcher.Length());
-            CollectionAssert.AreEqual(new string[] { "a", "bb", "ccc", "dd", "eee" }, blockMatcher.AllElements());
-            CollectionAssert.AreEqual(new string[] { "bb", "ccc" }, blockMatcher.Elements());
+            CollectionAssert.AreEqual(new[] { "a", "bb", "ccc", "dd", "eee" }, blockMatcher.AllElements());
+            CollectionAssert.AreEqual(new[] { "bb", "ccc" }, blockMatcher.Elements());
 
             var pointerMatcher = blockMatcher
                 .Anchors().PointerMatcher(threeCharsAnchor);
