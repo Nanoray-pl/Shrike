@@ -125,6 +125,13 @@ public static class CodeInstructionSequencePointerMatcherExt
         return self;
     }
 
+    /// <summary>
+    /// Retrieves a switch instruction target label with the given index.
+    /// </summary>
+    /// <param name="self">The current matcher.</param>
+    /// <param name="index">The index of the label in the switch instruction table.</param>
+    /// <param name="label">The retrieved label.</param>
+    /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> GetSwitchLabel(this SequencePointerMatcher<CodeInstruction> self, int index, out Label label)
     {
         if (self.Element().opcode != OpCodes.Switch)
@@ -133,6 +140,14 @@ public static class CodeInstructionSequencePointerMatcherExt
         return self;
     }
 
+    /// <summary>
+    /// Retrieves a switch instruction target label with the given enum's value as index.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type.</typeparam>
+    /// <param name="self">The current matcher.</param>
+    /// <param name="enum">The enum value used as the index of the label in the switch instruction table.</param>
+    /// <param name="label">The retrieved label.</param>
+    /// <returns>The current matcher.</returns>
     public static SequencePointerMatcher<CodeInstruction> GetSwitchLabel<TEnum>(this SequencePointerMatcher<CodeInstruction> self, TEnum @enum, out Label label) where TEnum : struct, Enum
         => self.GetSwitchLabel(Convert.ToInt32(@enum), out label);
 

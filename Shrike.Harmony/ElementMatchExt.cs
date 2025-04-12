@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -229,6 +230,13 @@ public static class ElementMatchExt
         });
     }
 
+    /// <summary>
+    /// Retrieves a switch instruction target label with the given index upon finding an instruction.
+    /// </summary>
+    /// <param name="self">The match.</param>
+    /// <param name="index">The index of the label in the switch instruction table.</param>
+    /// <param name="labelReference">A reference where the retrieved label will be stored.</param>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> GetSwitchLabel(this ElementMatch<CodeInstruction> self, int index, out StructRef<Label> labelReference)
     {
         StructRef<Label> reference = new(default);
@@ -240,4 +248,15 @@ public static class ElementMatchExt
             return matcher;
         });
     }
+
+    /// <summary>
+    /// Retrieves a switch instruction target label with the given index upon finding an instruction.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type.</typeparam>
+    /// <param name="self">The match.</param>
+    /// <param name="enum">The enum value used as the index of the label in the switch instruction table.</param>
+    /// <param name="labelReference">A reference where the retrieved label will be stored.</param>
+    /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
+    public static ElementMatch<CodeInstruction> GetSwitchLabel<TEnum>(this ElementMatch<CodeInstruction> self, TEnum @enum, out StructRef<Label> labelReference) where TEnum : struct, Enum
+        => self.GetSwitchLabel(Convert.ToInt32(@enum), out labelReference);
 }
