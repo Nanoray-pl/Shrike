@@ -6,6 +6,7 @@
 
 * Added `GetSwitchLabel` methods.
 * Added `ILMatches.LdcI4<TEnum>`.
+* Added `ElementMatch<CodeInstruction>.SameLocal`.
 * Fixed `ILMatches.Ldloc(CodeInstruction)` and `ILMatches.Stloc(CodeInstruction)`.
 
 ## 3.1.1

@@ -259,4 +259,34 @@ public static class ElementMatchExt
     /// <returns>A new match with a <c>Find</c> delegate that will set the value of the given reference.</returns>
     public static ElementMatch<CodeInstruction> GetSwitchLabel<TEnum>(this ElementMatch<CodeInstruction> self, TEnum @enum, out StructRef<Label> labelReference) where TEnum : struct, Enum
         => self.GetSwitchLabel(Convert.ToInt32(@enum), out labelReference);
+
+    /// <summary>
+    /// Adds a postcondition to the match, making sure all marked matches reference the same local variable.
+    /// </summary>
+    /// <param name="self">The match.</param>
+    /// <param name="localIndexReference">The local variable index reference to use for comparison purposes.</param>
+    /// <returns>A new match with a <c>Find</c> postcondition that will validate whether all marked matches reference the same local variable.</returns>
+    public static ElementMatch<CodeInstruction> SameLocal(this ElementMatch<CodeInstruction> self, out NullableStructRef<int> localIndexReference)
+    {
+        localIndexReference = new();
+        return self.SameLocal(localIndexReference);
+    }
+
+    /// <summary>
+    /// Adds a postcondition to the match, making sure all marked matches reference the same local variable.
+    /// </summary>
+    /// <param name="self">The match.</param>
+    /// <param name="localIndexReference">The local variable index reference to use for comparison purposes.</param>
+    /// <returns>A new match with a <c>Find</c> postcondition that will validate whether all marked matches reference the same local variable.</returns>
+    public static ElementMatch<CodeInstruction> SameLocal(this ElementMatch<CodeInstruction> self, NullableStructRef<int> localIndexReference)
+        => self
+            .WithSetupDelegate(() => localIndexReference.Value = null)
+            .WithDelegate((matcher, _, element) =>
+            {
+                if (!element.TryGetLocalIndex(out int localIndex))
+                    return matcher;
+                localIndexReference.Value = localIndex;
+                return matcher;
+            })
+            .WithPostcondition(element => element.TryGetLocalIndex(out int localIndex) && localIndexReference.Value == localIndex);
 }
