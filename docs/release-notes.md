@@ -4,6 +4,7 @@
 
 ## Upcoming release
 
+* Added `SetupDelegates` and `Postconditions` to `ElementMatch`.
 * Deprecated `ElementMatch.True` in favor of `ElementMatch.Any`.
 
 ## 3.1.0

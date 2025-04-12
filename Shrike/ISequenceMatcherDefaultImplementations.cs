@@ -259,11 +259,21 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
                     int maxIndex = endIndex - toFind.Count;
                     for (int index = startIndex; index <= maxIndex; index++)
                     {
+                        foreach (var match in toFind)
+                            if (match.SetupDelegates is { } setupDelegates)
+                                foreach (var setupDelegate in setupDelegates)
+                                    setupDelegate();
+
                         for (int toFindIndex = 0; toFindIndex < toFind.Count; toFindIndex++)
-                        {
                             if (!toFind[toFindIndex].Matches(allElements[index + toFindIndex]))
                                 goto continueOuter;
-                        }
+
+                        for (int toFindIndex = 0; toFindIndex < toFind.Count; toFindIndex++)
+                            if (toFind[toFindIndex].Postconditions is { } postconditions)
+                                foreach (var postcondition in postconditions)
+                                    if (!postcondition(allElements[index + toFindIndex]))
+                                        goto continueOuter;
+
                         return MakeFinalMatcher(index);
                     continueOuter:;
                     }
@@ -274,11 +284,21 @@ internal static class ISequenceMatcherDefaultImplementations<TElement>
                     int minIndex = startIndex + toFind.Count - 1;
                     for (int index = endIndex - 1; index >= minIndex; index--)
                     {
+                        foreach (var match in toFind)
+                            if (match.SetupDelegates is { } setupDelegates)
+                                foreach (var setupDelegate in setupDelegates)
+                                    setupDelegate();
+
                         for (int toFindIndex = toFind.Count - 1; toFindIndex >= 0; toFindIndex--)
-                        {
                             if (!toFind[toFindIndex].Matches(allElements[index + toFindIndex - toFind.Count + 1]))
                                 goto continueOuter;
-                        }
+
+                        for (int toFindIndex = 0; toFindIndex < toFind.Count; toFindIndex++)
+                            if (toFind[toFindIndex].Postconditions is { } postconditions)
+                                foreach (var postcondition in postconditions)
+                                    if (!postcondition(allElements[index + toFindIndex - toFind.Count + 1]))
+                                        goto continueOuter;
+
                         return MakeFinalMatcher(index - toFind.Count + 1);
                     continueOuter:;
                     }
