@@ -2,7 +2,8 @@
 
 # Release notes
 
-## Upcoming release
+## 3.2.0
+Released 12 April 2024.
 
 * Updated Harmony to 2.3.5.
 * Added `GetSwitchLabel` methods.
