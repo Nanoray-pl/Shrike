@@ -189,54 +189,7 @@ public static class ILMatches
     /// </summary>
     /// <param name="value">The value.</param>
     public static ElementMatch<CodeInstruction> LdcI4(int value)
-        => new($"{{ldc.i4: {value}}}", i =>
-        {
-            switch (value)
-            {
-                case 0:
-                    if (i.opcode == OpCodes.Ldc_I4_0)
-                        return true;
-                    break;
-                case 1:
-                    if (i.opcode == OpCodes.Ldc_I4_1)
-                        return true;
-                    break;
-                case 2:
-                    if (i.opcode == OpCodes.Ldc_I4_2)
-                        return true;
-                    break;
-                case 3:
-                    if (i.opcode == OpCodes.Ldc_I4_3)
-                        return true;
-                    break;
-                case 4:
-                    if (i.opcode == OpCodes.Ldc_I4_4)
-                        return true;
-                    break;
-                case 5:
-                    if (i.opcode == OpCodes.Ldc_I4_5)
-                        return true;
-                    break;
-                case 6:
-                    if (i.opcode == OpCodes.Ldc_I4_6)
-                        return true;
-                    break;
-                case 7:
-                    if (i.opcode == OpCodes.Ldc_I4_7)
-                        return true;
-                    break;
-                case 8:
-                    if (i.opcode == OpCodes.Ldc_I4_8)
-                        return true;
-                    break;
-                case -1:
-                    if (i.opcode == OpCodes.Ldc_I4_M1)
-                        return true;
-                    break;
-            }
-            return (i.opcode == OpCodes.Ldc_I4 && (int)i.operand == value) ||
-                (value < 256 && i.opcode == OpCodes.Ldc_I4_S && ((i.operand is int @int && @int == value) || (i.operand is sbyte @byte && @byte == value)));
-        });
+        => new($"{{ldc.i4: {value}}}", i => i.TryGetIntConstant(out int constant) && constant == value);
 
     /// <summary>
     /// Matches an <c>ldc.i4</c>(<c>.s</c>/<c>.0</c>/<c>.1</c>/<c>.2</c>/<c>.3</c>/<c>.4</c>/<c>.5</c>/<c>.6</c>/<c>.7</c>/<c>.8</c>/<c>.m1</c>) instruction with a given enum value, which will be converted to <see cref="int"/>.

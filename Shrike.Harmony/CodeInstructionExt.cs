@@ -61,4 +61,77 @@ public static class CodeInstructionExt
                 return false;
         }
     }
+
+    /// <summary>
+    /// Tries to get the constant int value of a given instruction.
+    /// </summary>
+    /// <param name="instruction">The instruction that potentially loads a constant int value.</param>
+    /// <param name="constant">The constant int value.</param>
+    /// <returns>Whether the instruction actually loads a constant int value.</returns>
+    public static bool TryGetIntConstant(this CodeInstruction instruction, out int constant)
+    {
+        if (instruction.opcode == OpCodes.Ldc_I4_0)
+        {
+            constant = 0;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_1)
+        {
+            constant = 1;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_2)
+        {
+            constant = 2;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_3)
+        {
+            constant = 3;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_4)
+        {
+            constant = 4;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_5)
+        {
+            constant = 5;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_6)
+        {
+            constant = 6;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_7)
+        {
+            constant = 7;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_8)
+        {
+            constant = 8;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_M1)
+        {
+            constant = -1;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4)
+        {
+            constant = (int)instruction.operand;
+            return true;
+        }
+        if (instruction.opcode == OpCodes.Ldc_I4_S)
+        {
+            constant = (sbyte)instruction.operand;
+            return true;
+        }
+
+        constant = 0;
+        return false;
+    }
 }
