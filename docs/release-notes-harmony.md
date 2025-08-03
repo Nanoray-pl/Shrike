@@ -2,6 +2,11 @@
 
 # Release notes
 
+## 3.3.0
+Released 3 August 2025.
+
+* Added `CodeInstructionExt.TryGetIntConstant`.
+
 ## 3.2.0
 Released 12 April 2024.
 
